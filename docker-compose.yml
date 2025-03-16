@@ -1,0 +1,26 @@
+version: '2'
+services:
+  server:
+    container_name: server
+    build:
+      context: .
+      dockerfile: ./.docker/Dockerfile
+    image: server:latest
+    volumes:
+      - ./:/app
+    ports:
+      - 18080:8080
+    networks:
+      - spring-cloud-network
+  postgres:
+    image: 'postgres:latest'
+    ports:
+      - 25432:5432
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: example
+    volumes:
+      - ./var/db-data/:/var/lib/postgresql/data/
+networks:
+  spring-cloud-network:
+    driver: bridge

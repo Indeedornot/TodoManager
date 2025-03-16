@@ -1,4 +1,4 @@
-version: '2'
+version: '2.1'
 services:
   server:
     container_name: server
@@ -10,8 +10,9 @@ services:
       - ./:/app
     ports:
       - 18080:8080
-    networks:
-      - spring-cloud-network
+    depends_on:
+      postgres:
+        condition: service_healthy
   postgres:
     image: 'postgres:latest'
     ports:

@@ -5,6 +5,6 @@ apk update && apk add maven
 
 # Run mvn clean in /app
 cd /app
-mvn clean package
+mvn package
 
 java -jar target/*.jar

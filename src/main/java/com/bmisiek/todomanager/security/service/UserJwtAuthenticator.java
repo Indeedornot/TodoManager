@@ -1,17 +1,25 @@
 package com.bmisiek.todomanager.security.service;
 
+import com.bmisiek.todomanager.security.config.JwtUtil;
 import com.bmisiek.todomanager.security.dto.LoginDto;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserAuthenticator {
+public class UserJwtAuthenticator {
     private final AuthenticationManager authenticationManager;
-    public UserAuthenticator(AuthenticationManager authenticationManager) {
+    private final UserDetailsService userDetailsService;
+    private final JwtUtil jwtUtil;
+
+    public UserJwtAuthenticator(AuthenticationManager authenticationManager, UserDetailsService userDetailsService, JwtUtil jwtUtil) {
         this.authenticationManager = authenticationManager;
+        this.userDetailsService = userDetailsService;
+        this.jwtUtil = jwtUtil;
     }
 
     private static boolean isAuthenticated() {
@@ -21,15 +29,15 @@ public class UserAuthenticator {
                !authentication.getPrincipal().equals("anonymousUser");
     }
 
-    public void authenticate(LoginDto loginDto) {
+    public String authenticate(LoginDto loginDto) {
         if(isAuthenticated()) {
             throw new IllegalStateException("User is already authenticated.");
         }
 
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUsernameOrEmail(), loginDto.getPassword()));
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUsernameOrEmail(), loginDto.getPassword()));
+        final var userDetails = userDetailsService.loadUserByUsername(loginDto.getUsernameOrEmail());
 
-        var authContext = SecurityContextHolder.getContext();
-        authContext.setAuthentication(authentication);
+        return jwtUtil.generateToken(userDetails);
     }
 
     public void logout() {

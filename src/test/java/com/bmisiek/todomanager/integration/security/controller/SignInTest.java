@@ -65,50 +65,51 @@ public class SignInTest {
                 .andExpect(MockMvcResultMatchers.status().isUnauthorized());
     }
 
-//    @Test
-//    public void Should_NotLoginUser_WhenAlreadyLoggedIn() throws Exception {
-//        var username = "testuser";
-//        var email = "testtest";
-//        var password = "testpassword";
-//
-//        CreateUser(username, email, password);
-//
-//        LoginDto loginDto = new LoginDto();
-//        loginDto.setUsernameOrEmail(username);
-//        loginDto.setPassword(password);
-//
-//        mockMvc.perform(MyRequestBuilders.postJson(Routes.LOGIN, loginDto))
-//                .andExpect(MockMvcResultMatchers.status().isOk())
-//                .andReturn().getResponse();
-//
-//        mockMvc.perform(MyRequestBuilders.postJson(Routes.LOGIN, loginDto))
-//                .andExpect(MockMvcResultMatchers.status().isUnauthorized());
-//    }
+    @Test
+    public void Should_NotLoginUser_WhenAlreadyLoggedIn() throws Exception {
+        var username = "testuser";
+        var email = "testtest";
+        var password = "testpassword";
 
-//    @Test
-//    public void Should_LogoutUser() throws Exception {
-//        var username = "testuser";
-//        var email = "testtest";
-//        var password = "testpassword";
-//
-//        CreateUser(username, email, password);
-//
-//        LoginDto loginDto = new LoginDto();
-//        loginDto.setUsernameOrEmail(username);
-//        loginDto.setPassword(password);
-//
-//        mockMvc.perform(MyRequestBuilders.postJson(Routes.LOGIN, loginDto))
-//                .andExpect(MockMvcResultMatchers.status().isOk());
-//
-//        mockMvc.perform(MyRequestBuilders.post(Routes.LOGOUT))
-//                .andExpect(MockMvcResultMatchers.status().isOk());
-//    }
-//
-//    @Test
-//    public void Should_NotLogoutUser_WhenNotLoggedIn() throws Exception {
-//        mockMvc.perform(MyRequestBuilders.post(Routes.LOGOUT))
-//                .andExpect(MockMvcResultMatchers.status().isBadRequest());
-//    }
+        CreateUser(username, email, password);
+
+        LoginDto loginDto = new LoginDto();
+        loginDto.setUsernameOrEmail(username);
+        loginDto.setPassword(password);
+
+        var token = mockMvc.perform(MyRequestBuilders.postJson(Routes.LOGIN, loginDto))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        mockMvc.perform(MyRequestBuilders.postJson(Routes.LOGIN, loginDto, token))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    public void Should_LogoutUser() throws Exception {
+        var username = "testuser";
+        var email = "testtest";
+        var password = "testpassword";
+
+        CreateUser(username, email, password);
+
+        LoginDto loginDto = new LoginDto();
+        loginDto.setUsernameOrEmail(username);
+        loginDto.setPassword(password);
+
+        var token = mockMvc.perform(MyRequestBuilders.postJson(Routes.LOGIN, loginDto))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        mockMvc.perform(MyRequestBuilders.post(Routes.LOGOUT, token))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    public void Should_NotLogoutUser_WhenNotLoggedIn() throws Exception {
+        mockMvc.perform(MyRequestBuilders.post(Routes.LOGOUT))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
 
 
     private void CreateUser(String username, String email, String password) throws Exception {

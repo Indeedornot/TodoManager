@@ -1,6 +1,6 @@
 package com.bmisiek.todomanager.security.config;
 
-import java.util.Collections;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -22,17 +22,16 @@ public class UserDetailsService implements org.springframework.security.core.use
 
     @Override
     public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
-        User user = userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
-                .orElseThrow(() ->
-                        new UsernameNotFoundException("User not found with username or email: "+ usernameOrEmail));
+        Optional<User> foundUser = userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail);
+        if (foundUser.isEmpty()) {
+            throw new UsernameNotFoundException("User not found");
+        }
 
+        var user = foundUser.get();
         Set<GrantedAuthority> authorities = user
-                .getRoles()
-                .stream()
+                .getRoles().stream()
                 .map((role) -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toSet());
 
-        return new org.springframework.security.core.userdetails.User(user.getEmail(),
-                user.getPassword(),
-                authorities);
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
     }
 }

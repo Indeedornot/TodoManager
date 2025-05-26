@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class SecurityControllerTest {
+public class SignUpTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -42,5 +42,48 @@ public class SecurityControllerTest {
         mockMvc.perform(MyRequestBuilders.postJson(Routes.LOGIN, loginDto))
                 .andExpect(MockMvcResultMatchers.status().isOk()
         );
+    }
+
+    @Test
+    public void Should_NotRegisterUser_WhenUsernameAlreadyExists() throws Exception {
+        var name = "testuser";
+        var username = "testuser";
+        var email = "testtest";
+        var otherEmail = "testtest2";
+        var password = "testpassword";
+
+        SignUpDto signUpDto = new SignUpDto();
+        signUpDto.setName(name);
+        signUpDto.setUsername(username);
+        signUpDto.setEmail(email);
+        signUpDto.setPassword(password);
+
+        mockMvc.perform(MyRequestBuilders.postJson(Routes.SIGN_UP, signUpDto))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        signUpDto.setUsername(otherEmail);
+        mockMvc.perform(MyRequestBuilders.postJson(Routes.SIGN_UP, signUpDto))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    public void Should_NotRegisterUser_WhenEmailAlreadyExists() throws Exception {
+        var name = "testuser";
+        var username = "testuser";
+        var email = "testtest";
+        var password = "testpassword";
+
+        SignUpDto signUpDto = new SignUpDto();
+        signUpDto.setName(name);
+        signUpDto.setUsername(username);
+        signUpDto.setEmail(email);
+        signUpDto.setPassword(password);
+
+        mockMvc.perform(MyRequestBuilders.postJson(Routes.SIGN_UP, signUpDto))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        signUpDto.setUsername("newusername");
+        mockMvc.perform(MyRequestBuilders.postJson(Routes.SIGN_UP, signUpDto))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 }

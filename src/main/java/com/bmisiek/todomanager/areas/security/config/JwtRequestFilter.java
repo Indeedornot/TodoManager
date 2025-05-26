@@ -80,6 +80,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     }
 
     private static Optional<String> GetJwtToken(HttpServletRequest request) {
+        var headers = request.getHeaderNames();
         String authorizationHeader = request.getHeader("Authorization");
 
         var jwtPrefix = "Bearer ";

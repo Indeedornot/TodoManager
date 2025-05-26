@@ -8,6 +8,7 @@ import com.bmisiek.todomanager.areas.admin.service.ProjectEditor;
 import com.bmisiek.todomanager.areas.admin.service.ProjectFetcher;
 import com.bmisiek.todomanager.areas.admin.service.ProjectRemover;
 import com.bmisiek.todomanager.areas.security.service.UserJwtAuthenticator;
+import com.bmisiek.todomanager.config.openapi.RequiresJwt;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiresJwt
 public class ProjectController {
     private final ProjectCreator projectCreator;
     private final ProjectFetcher projectFetcher;

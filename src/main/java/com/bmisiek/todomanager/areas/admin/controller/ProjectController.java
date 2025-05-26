@@ -41,7 +41,7 @@ public class ProjectController {
     }
 
     @PostMapping("/api/admin/projects")
-    public ResponseEntity<Long> create(ProjectCreateDto dto) {
+    public ResponseEntity<Long> create(@RequestBody ProjectCreateDto dto) {
         try {
             var user = userAuthenticator.getAuthenticatedUser();
             Long projectId = projectCreator.create(dto, user);
@@ -61,7 +61,7 @@ public class ProjectController {
     }
 
     @PutMapping("/api/admin/projects/{id}")
-    public ResponseEntity<String> edit(ProjectEditDto dto, @PathVariable Long id) {
+    public ResponseEntity<String> edit(@RequestBody ProjectEditDto dto, @PathVariable Long id) {
         if (dto.getId() == null || !dto.getId().equals(id)) {
             return ResponseEntity.badRequest().build();
         }

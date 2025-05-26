@@ -1,5 +1,6 @@
 package com.bmisiek.todomanager.security.controller;
 
+import com.bmisiek.todomanager.controller.Routes;
 import com.bmisiek.todomanager.security.entity.Role;
 import com.bmisiek.todomanager.security.entity.User;
 import com.bmisiek.todomanager.security.dto.LoginDto;
@@ -41,7 +42,7 @@ public class AuthController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @PostMapping("/signin")
+    @PostMapping(Routes.LOGIN)
     public ResponseEntity<String> authenticateUser(@RequestBody LoginDto loginDto){
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginDto.getUsernameOrEmail(), loginDto.getPassword()));
@@ -50,7 +51,7 @@ public class AuthController {
         return new ResponseEntity<>("User signed-in successfully!.", HttpStatus.OK);
     }
 
-    @PostMapping("/signup")
+    @PostMapping(Routes.SIGN_UP)
     public ResponseEntity<?> registerUser(@RequestBody SignUpDto signUpDto){
         if(userRepository.existsByUsername(signUpDto.getUsername())){
             return new ResponseEntity<>("Username is already taken!", HttpStatus.BAD_REQUEST);

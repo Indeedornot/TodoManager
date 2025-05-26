@@ -2,15 +2,12 @@ package com.bmisiek.libraries.mockmvc;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.net.URI;
-import java.util.Optional;
 
 public class MyRequestBuilders extends MockMvcRequestBuilders {
     public static @NotNull MockHttpServletRequestBuilder postJson(String url, Object content) throws JsonProcessingException {
@@ -31,6 +28,10 @@ public class MyRequestBuilders extends MockMvcRequestBuilders {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + bearer);
     }
 
+    public static MockHttpServletRequestBuilder getAuthed(String uriTemplate, String bearer) {
+        return MockMvcRequestBuilders.get(URI.create(uriTemplate))
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + bearer);
+    }
 
     private static @NotNull String toJson(Object content) throws JsonProcessingException {
         var objectMapper = new ObjectMapper();

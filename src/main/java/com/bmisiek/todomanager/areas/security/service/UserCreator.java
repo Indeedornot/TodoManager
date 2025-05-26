@@ -38,6 +38,16 @@ public class UserCreator {
         return user.getId();
     }
 
+    public Long createUser(SignUpDto signUpDto, RoleEnum roleEnum) {
+        validateSignUpData(signUpDto);
+
+        User user = mapToUser(signUpDto);
+        assignRole(user, roleEnum);
+
+        userRepository.save(user);
+        return user.getId();
+    }
+
     private void validateSignUpData(SignUpDto signUpDto) {
         if(userRepository.existsByUsername(signUpDto.getUsername())){
             throw new IllegalArgumentException("Username is already taken!");

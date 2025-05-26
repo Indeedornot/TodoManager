@@ -16,6 +16,8 @@ public class ProjectEditor {
     }
 
     public void edit(ProjectEditDto projectEditDto, User user) throws IllegalArgumentException, AccessDeniedException, EntityNotFoundException {
+        validateEditDto(projectEditDto);
+
         var project = getProject(projectEditDto);
         validateProjectOwnership(project, user);
 
@@ -36,6 +38,15 @@ public class ProjectEditor {
     private void validateProjectOwnership(Project project, User user) {
         if (project.getOwner().getId() != user.getId()) {
             throw new AccessDeniedException("User does not own this project");
+        }
+    }
+
+    private void validateEditDto(ProjectEditDto projectEditDto) throws IllegalArgumentException {
+        if (projectEditDto.getName() == null || projectEditDto.getName().isEmpty()) {
+            throw new IllegalArgumentException("Project name cannot be empty");
+        }
+        if (projectEditDto.getDescription() == null || projectEditDto.getDescription().isEmpty()) {
+            throw new IllegalArgumentException("Project description cannot be empty");
         }
     }
 }

@@ -118,6 +118,16 @@ public class ProjectControllerTest {
     }
 
     @Test
+    public void Should_NotEdit_WhenInvalidData() throws Exception {
+        String token = createUserAndGetToken(1L);
+        Long projectId = createProject(new ProjectCreateDto("test", "test"), token);
+
+        var invalidEditDto = new ProjectEditDto(projectId, "", "");
+        mockMvc.perform(MyRequestBuilders.putJson("/api/admin/projects/" + projectId, invalidEditDto, token))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
     public void Should_NotDelete_WhenNotOwner() throws Exception {
         var ownerToken = createUserAndGetToken(1L);
         var otherUserToken = createUserAndGetToken(2L);

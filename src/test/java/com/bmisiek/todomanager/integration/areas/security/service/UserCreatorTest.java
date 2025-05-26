@@ -8,13 +8,11 @@ import com.bmisiek.todomanager.areas.security.entity.User;
 import com.bmisiek.todomanager.areas.security.repository.UserRepository;
 import com.bmisiek.todomanager.areas.security.service.UserCreator;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.Set;
 
 @SpringBootTest
@@ -32,7 +30,7 @@ public class UserCreatorTest {
     @Test
     public void Should_CreateUser() {
         var dto = createSignUpDto();
-        userCreator.createUser(dto);
+        userCreator.create(dto);
 
         var user = userRepository.findByUsername(dto.getUsername()).orElseThrow();
         var roles = user.getRoles();
@@ -47,7 +45,7 @@ public class UserCreatorTest {
 
         securityProperties.setPassKey("123456789");
         dto.setPassKey(securityProperties.getPassKey());
-        userCreator.createUser(dto);
+        userCreator.create(dto);
 
         var user = userRepository.findByUsername(dto.getUsername()).orElseThrow();
         var roles = user.getRoles();

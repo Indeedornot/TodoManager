@@ -185,7 +185,7 @@ public class ProjectControllerTest {
         var email = "test" + counter + "@example.com";
 
         var signUpDto = new SignUpDto("test", username, email, "test123", null);
-        userCreator.createUser(signUpDto, RoleEnum.ROLE_ADMIN);
+        userCreator.create(signUpDto, RoleEnum.ROLE_ADMIN);
 
         var loginDto = new LoginDto(username, "test123");
         return authenticator.authenticate(loginDto);

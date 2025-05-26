@@ -26,7 +26,7 @@ public class UserCreator {
         this.securityProperties = securityProperties;
     }
 
-    public Long createUser(SignUpDto signUpDto) {
+    public Long create(SignUpDto signUpDto) {
         validateSignUpData(signUpDto);
 
         User user = mapToUser(signUpDto);
@@ -38,7 +38,7 @@ public class UserCreator {
         return user.getId();
     }
 
-    public Long createUser(SignUpDto signUpDto, RoleEnum roleEnum) {
+    public Long create(SignUpDto signUpDto, RoleEnum roleEnum) {
         validateSignUpData(signUpDto);
 
         User user = mapToUser(signUpDto);

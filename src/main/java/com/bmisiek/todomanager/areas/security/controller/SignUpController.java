@@ -23,7 +23,7 @@ public class SignUpController {
     @PostMapping(Routes.SIGN_UP)
     public ResponseEntity<?> registerUser(@RequestBody SignUpDto signUpDto){
         try {
-            userCreator.createUser(signUpDto);
+            userCreator.create(signUpDto);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

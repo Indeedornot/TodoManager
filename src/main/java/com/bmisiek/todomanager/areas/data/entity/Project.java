@@ -23,7 +23,7 @@ public class Project {
     @OneToMany(mappedBy = "project")
     private Set<Task> tasks;
 
-    @OneToOne
-    @JoinColumn(name = "owner_id")
+    @ManyToOne
+    @JoinColumn(name = "owner_id", unique = false)
     private User owner;
 }

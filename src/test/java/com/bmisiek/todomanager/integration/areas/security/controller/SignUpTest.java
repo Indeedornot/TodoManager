@@ -61,7 +61,7 @@ public class SignUpTest {
         mockMvc.perform(MyRequestBuilders.postJson(Routes.SIGN_UP, signUpDto))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        signUpDto.setUsername(otherEmail);
+        signUpDto.setEmail(otherEmail);
         mockMvc.perform(MyRequestBuilders.postJson(Routes.SIGN_UP, signUpDto))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }

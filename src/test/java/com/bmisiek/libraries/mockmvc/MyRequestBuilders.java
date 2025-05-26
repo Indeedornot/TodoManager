@@ -23,6 +23,24 @@ public class MyRequestBuilders extends MockMvcRequestBuilders {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + bearer);
     }
 
+    public static @NotNull MockHttpServletRequestBuilder putJson(String url, Object content, String bearer) throws JsonProcessingException {
+        return MockMvcRequestBuilders.put(url)
+                .contentType("application/json")
+                .content(content instanceof String ? (String) content : toJson(content))
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + bearer);
+    }
+
+    public static @NotNull MockHttpServletRequestBuilder deleteAuthed(String url, String bearer) {
+        return MockMvcRequestBuilders.delete(url)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + bearer);
+    }
+
+    public static @NotNull MockHttpServletRequestBuilder putJson(String url, Object content) throws JsonProcessingException {
+        return MockMvcRequestBuilders.put(url)
+                .contentType("application/json")
+                .content(content instanceof String ? (String) content : toJson(content));
+    }
+
     public static MockHttpServletRequestBuilder post(String uriTemplate, String bearer) {
         return MockMvcRequestBuilders.post(URI.create(uriTemplate))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + bearer);

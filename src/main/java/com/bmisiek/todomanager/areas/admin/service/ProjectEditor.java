@@ -4,6 +4,7 @@ import com.bmisiek.todomanager.areas.admin.dto.ProjectEditDto;
 import com.bmisiek.todomanager.areas.data.entity.Project;
 import com.bmisiek.todomanager.areas.data.repository.ProjectRepository;
 import com.bmisiek.todomanager.areas.security.entity.User;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +15,7 @@ public class ProjectEditor {
         this.projectRepository = projectRepository;
     }
 
-    public void edit(ProjectEditDto projectEditDto, User user) throws IllegalArgumentException, AccessDeniedException {
+    public void edit(ProjectEditDto projectEditDto, User user) throws IllegalArgumentException, AccessDeniedException, EntityNotFoundException {
         var project = getProject(projectEditDto);
         validateProjectOwnership(project, user);
 
@@ -26,7 +27,7 @@ public class ProjectEditor {
     private Project getProject(ProjectEditDto projectEditDto) throws IllegalArgumentException {
         var foundProject = projectRepository.findById(projectEditDto.getId());
         if (foundProject.isEmpty()) {
-            throw new IllegalArgumentException("Project not found with id: " + projectEditDto.getId());
+            throw new EntityNotFoundException("Project not found with id: " + projectEditDto.getId());
         }
 
         return foundProject.get();

@@ -2,6 +2,7 @@ package com.bmisiek.todomanager.areas.admin.service;
 
 import com.bmisiek.todomanager.areas.admin.dto.ProjectDto;
 import com.bmisiek.todomanager.areas.data.repository.ProjectRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -17,7 +18,7 @@ public class ProjectFetcher {
 
     public ProjectDto findById(Long id) throws IllegalArgumentException {
         var project = projectRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Project not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Project not found with id: " + id));
 
         return new ProjectDto(project);
     }

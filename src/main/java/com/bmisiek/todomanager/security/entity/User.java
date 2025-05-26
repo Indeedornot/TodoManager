@@ -1,37 +1,29 @@
 package com.bmisiek.todomanager.security.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
+import jakarta.persistence.*;
+import java.util.Set;
+
+@Data
 @Entity
-@Table(name = "users")
+@Table(name = "users", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"username"}),
+        @UniqueConstraint(columnNames = {"email"})
+})
 public class User {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
-    @Setter
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    private String name;
     private String username;
-
-    @Setter
+    private String email;
     private String password;
 
-    @Setter
-    private String role;
-
-    public User() {
-
-    }
-
-    public User(String username, String password) {
-        super();
-        this.username = username;
-        this.password = password;
-    }
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    private Set<Role> roles;
 }

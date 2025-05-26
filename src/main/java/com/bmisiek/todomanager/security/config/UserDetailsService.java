@@ -1,9 +1,12 @@
 package com.bmisiek.todomanager.security.config;
 
 import java.util.Collections;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.bmisiek.todomanager.security.entity.User;
 import com.bmisiek.todomanager.security.repository.UserRepository;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
-
     private final UserRepository userRepository;
 
     public UserDetailsService(UserRepository userRepository) {
@@ -19,14 +21,18 @@ public class UserDetailsService implements org.springframework.security.core.use
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
+        User user = userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException("User not found with username or email: "+ usernameOrEmail));
 
-        return new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
+        Set<GrantedAuthority> authorities = user
+                .getRoles()
+                .stream()
+                .map((role) -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toSet());
+
+        return new org.springframework.security.core.userdetails.User(user.getEmail(),
                 user.getPassword(),
-                Collections.singleton(new SimpleGrantedAuthority(user.getRole()))
-        );
+                authorities);
     }
 }

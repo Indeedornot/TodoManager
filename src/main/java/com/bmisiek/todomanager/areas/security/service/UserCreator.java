@@ -1,5 +1,6 @@
 package com.bmisiek.todomanager.areas.security.service;
 
+import com.bmisiek.todomanager.areas.security.config.SecurityProperties;
 import com.bmisiek.todomanager.areas.security.dto.SignUpDto;
 import com.bmisiek.todomanager.areas.security.entity.Role;
 import com.bmisiek.todomanager.areas.security.entity.RoleEnum;
@@ -9,24 +10,29 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Optional;
 
 @Service
 public class UserCreator {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
+    private final SecurityProperties securityProperties;
 
-    public UserCreator(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleService roleService) {
+    public UserCreator(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleService roleService, SecurityProperties securityProperties) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleService = roleService;
+        this.securityProperties = securityProperties;
     }
 
     public Long createUser(SignUpDto signUpDto) {
         validateSignUpData(signUpDto);
 
         User user = mapToUser(signUpDto);
-        assignRole(user, RoleEnum.ROLE_USER);
+
+        RoleEnum roleEnum = getRole(signUpDto);
+        assignRole(user, roleEnum);
 
         userRepository.save(user);
         return user.getId();
@@ -40,6 +46,12 @@ public class UserCreator {
         if(userRepository.existsByEmail(signUpDto.getEmail())){
             throw new IllegalArgumentException("Email is already taken!");
         }
+    }
+
+    private RoleEnum getRole(SignUpDto signUpDto) {
+        return Optional.ofNullable(signUpDto.getPassKey())
+                .filter(passKey -> passKey.equals(securityProperties.getPassKey()))
+                .map(_ -> RoleEnum.ROLE_ADMIN).orElse(RoleEnum.ROLE_USER);
     }
 
     private void assignRole(User user, RoleEnum roleEnum) {

@@ -6,6 +6,7 @@ import com.bmisiek.todomanager.security.dto.LoginDto;
 import com.bmisiek.todomanager.security.dto.SignUpDto;
 import com.bmisiek.todomanager.security.repository.RoleRepository;
 import com.bmisiek.todomanager.security.repository.UserRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Collections;
 
 @RestController
+@Tag(name = "Authentication", description = "Authentication API")
 @RequestMapping("/api/auth")
 public class AuthController {
 

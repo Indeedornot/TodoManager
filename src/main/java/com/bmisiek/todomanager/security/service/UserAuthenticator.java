@@ -14,8 +14,29 @@ public class UserAuthenticator {
         this.authenticationManager = authenticationManager;
     }
 
+    private static boolean isAuthenticated() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication != null &&
+               authentication.isAuthenticated() &&
+               !authentication.getPrincipal().equals("anonymousUser");
+    }
+
     public void authenticate(LoginDto loginDto) {
+        if(isAuthenticated()) {
+            throw new IllegalStateException("User is already authenticated.");
+        }
+
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUsernameOrEmail(), loginDto.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        var authContext = SecurityContextHolder.getContext();
+        authContext.setAuthentication(authentication);
+    }
+
+    public void logout() {
+        if(!isAuthenticated()) {
+                throw new IllegalStateException("User is not authenticated.");
+        }
+
+        SecurityContextHolder.clearContext();
     }
 }

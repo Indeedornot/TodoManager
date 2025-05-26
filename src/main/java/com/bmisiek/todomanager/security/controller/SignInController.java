@@ -24,10 +24,24 @@ public class SignInController {
     public ResponseEntity<String> authenticateUser(@RequestBody LoginDto loginDto){
         try {
             authenticator.authenticate(loginDto);
-        } catch (Exception e) {
+        }
+        catch (IllegalStateException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
 
         return new ResponseEntity<>("User signed-in successfully!.", HttpStatus.OK);
+    }
+
+    @PostMapping(Routes.LOGOUT)
+    public ResponseEntity<String> logoutUser() {
+        try {
+            authenticator.logout();
+        } catch (IllegalStateException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>("User logged out successfully.", HttpStatus.OK);
     }
 }

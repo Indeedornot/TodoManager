@@ -1,11 +1,11 @@
-package com.bmisiek.todomanager.security.config;
+package com.bmisiek.todomanager.areas.security.config;
 
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.bmisiek.todomanager.security.entity.User;
-import com.bmisiek.todomanager.security.repository.UserRepository;
+import com.bmisiek.todomanager.areas.security.entity.User;
+import com.bmisiek.todomanager.areas.security.repository.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

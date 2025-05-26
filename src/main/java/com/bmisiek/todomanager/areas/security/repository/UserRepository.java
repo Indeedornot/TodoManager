@@ -1,6 +1,6 @@
-package com.bmisiek.todomanager.security.repository;
+package com.bmisiek.todomanager.areas.security.repository;
 
-import com.bmisiek.todomanager.security.entity.User;
+import com.bmisiek.todomanager.areas.security.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

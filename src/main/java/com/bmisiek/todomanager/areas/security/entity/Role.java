@@ -1,4 +1,4 @@
-package com.bmisiek.todomanager.security.entity;
+package com.bmisiek.todomanager.areas.security.entity;
 
 import lombok.Data;
 

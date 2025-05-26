@@ -1,6 +1,6 @@
-package com.bmisiek.todomanager.security.dto;
+package com.bmisiek.todomanager.areas.security.dto;
 
-import com.bmisiek.todomanager.security.entity.User;
+import com.bmisiek.todomanager.areas.security.entity.User;
 import lombok.Data;
 
 @Data

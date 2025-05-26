@@ -1,9 +1,9 @@
-package com.bmisiek.todomanager.security.config;
+package com.bmisiek.todomanager.areas.security.config;
 
 import com.bmisiek.libraries.seeder.RunOnStartInterface;
-import com.bmisiek.todomanager.security.entity.Role;
-import com.bmisiek.todomanager.security.entity.RoleEnum;
-import com.bmisiek.todomanager.security.repository.RoleRepository;
+import com.bmisiek.todomanager.areas.security.entity.Role;
+import com.bmisiek.todomanager.areas.security.entity.RoleEnum;
+import com.bmisiek.todomanager.areas.security.repository.RoleRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;

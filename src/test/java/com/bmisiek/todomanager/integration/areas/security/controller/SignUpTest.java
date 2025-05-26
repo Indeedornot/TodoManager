@@ -1,9 +1,9 @@
-package com.bmisiek.todomanager.integration.security.controller;
+package com.bmisiek.todomanager.integration.areas.security.controller;
 
 import com.bmisiek.libraries.mockmvc.MyRequestBuilders;
-import com.bmisiek.todomanager.controller.Routes;
-import com.bmisiek.todomanager.security.dto.LoginDto;
-import com.bmisiek.todomanager.security.dto.SignUpDto;
+import com.bmisiek.todomanager.config.Routes;
+import com.bmisiek.todomanager.areas.security.dto.LoginDto;
+import com.bmisiek.todomanager.areas.security.dto.SignUpDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

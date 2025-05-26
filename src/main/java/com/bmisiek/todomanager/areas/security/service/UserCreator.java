@@ -1,10 +1,10 @@
-package com.bmisiek.todomanager.security.service;
+package com.bmisiek.todomanager.areas.security.service;
 
-import com.bmisiek.todomanager.security.dto.SignUpDto;
-import com.bmisiek.todomanager.security.entity.Role;
-import com.bmisiek.todomanager.security.entity.RoleEnum;
-import com.bmisiek.todomanager.security.entity.User;
-import com.bmisiek.todomanager.security.repository.UserRepository;
+import com.bmisiek.todomanager.areas.security.dto.SignUpDto;
+import com.bmisiek.todomanager.areas.security.entity.Role;
+import com.bmisiek.todomanager.areas.security.entity.RoleEnum;
+import com.bmisiek.todomanager.areas.security.entity.User;
+import com.bmisiek.todomanager.areas.security.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

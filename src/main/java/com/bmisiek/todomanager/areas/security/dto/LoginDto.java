@@ -1,4 +1,4 @@
-package com.bmisiek.todomanager.security.dto;
+package com.bmisiek.todomanager.areas.security.dto;
 
 import lombok.Data;
 

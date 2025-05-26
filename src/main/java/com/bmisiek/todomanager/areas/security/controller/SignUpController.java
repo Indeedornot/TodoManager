@@ -1,9 +1,8 @@
-package com.bmisiek.todomanager.security.controller;
+package com.bmisiek.todomanager.areas.security.controller;
 
-import com.bmisiek.todomanager.controller.Routes;
-import com.bmisiek.todomanager.security.dto.LoginDto;
-import com.bmisiek.todomanager.security.dto.SignUpDto;
-import com.bmisiek.todomanager.security.service.UserCreator;
+import com.bmisiek.todomanager.config.Routes;
+import com.bmisiek.todomanager.areas.security.dto.SignUpDto;
+import com.bmisiek.todomanager.areas.security.service.UserCreator;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package com.bmisiek.todomanager.security.config;
+package com.bmisiek.todomanager.areas.security.config;
 
 
 import io.jsonwebtoken.Claims;

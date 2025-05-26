@@ -1,7 +1,4 @@
-package com.bmisiek.todomanager.controller;
-
-import lombok.Data;
-import lombok.Getter;
+package com.bmisiek.todomanager.config;
 
 public class Routes {
     public static final String HOME = "/";

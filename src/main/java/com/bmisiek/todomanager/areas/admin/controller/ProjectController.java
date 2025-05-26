@@ -31,14 +31,14 @@ public class ProjectController {
         this.userAuthenticator = userAuthenticator;
     }
 
-    @GetMapping("/admin/projects")
+    @GetMapping("/api/admin/projects")
     public ResponseEntity<List<ProjectDto>> getAll() {
         var user = userAuthenticator.getAuthenticatedUser();
         var projects = projectFetcher.findByOwnerId(user.getId());
         return ResponseEntity.ok(projects);
     }
 
-    @PostMapping("/admin/projects")
+    @PostMapping("/api/admin/projects")
     public ResponseEntity<Long> create(ProjectCreateDto dto) {
         try {
             var user = userAuthenticator.getAuthenticatedUser();
@@ -49,7 +49,7 @@ public class ProjectController {
         }
     }
 
-    @GetMapping("/admin/projects/{id}")
+    @GetMapping("/api/admin/projects/{id}")
     public ResponseEntity<ProjectDto> getById(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(projectFetcher.findById(id));
@@ -58,7 +58,7 @@ public class ProjectController {
         }
     }
 
-    @PutMapping("/admin/projects/{id}")
+    @PutMapping("/api/admin/projects/{id}")
     public ResponseEntity<String> edit(ProjectEditDto dto, @PathVariable Long id) {
         if (dto.getId() == null || !dto.getId().equals(id)) {
             return ResponseEntity.badRequest().build();
@@ -75,7 +75,7 @@ public class ProjectController {
         }
     }
 
-    @DeleteMapping("/admin/projects/{id}")
+    @DeleteMapping("/api/admin/projects/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
         try {
             var user = userAuthenticator.getAuthenticatedUser();

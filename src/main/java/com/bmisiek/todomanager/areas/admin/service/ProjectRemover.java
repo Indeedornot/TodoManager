@@ -16,14 +16,14 @@ public class ProjectRemover {
         this.projectRepository = projectRepository;
     }
 
-    public void remove(Long projectId, User user) throws IllegalArgumentException, AccessDeniedException, EntityNotFoundException {
+    public void remove(Long projectId, User user) throws AccessDeniedException, EntityNotFoundException {
         var project = getProject(projectId);
         validateProjectOwnership(project, user);
 
         projectRepository.delete(project);
     }
 
-    private Project getProject(Long projectId) throws IllegalArgumentException {
+    private Project getProject(Long projectId) throws EntityNotFoundException {
         var project = projectRepository.findById(projectId);
         if (project.isEmpty()) {
             throw new EntityNotFoundException("Project not found with id: " + projectId);

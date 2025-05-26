@@ -92,9 +92,7 @@ public class ProjectController {
         catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
-        catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
-        } catch (AccessDeniedException e) {
+        catch (AccessDeniedException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }

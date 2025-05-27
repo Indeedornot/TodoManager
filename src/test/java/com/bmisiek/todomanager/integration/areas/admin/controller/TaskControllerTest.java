@@ -3,7 +3,7 @@ package com.bmisiek.todomanager.integration.areas.admin.controller;
 import com.bmisiek.libraries.mockmvc.MyRequestBuilders;
 import com.bmisiek.todomanager.areas.admin.dto.project.ProjectCreateDto;
 import com.bmisiek.todomanager.areas.admin.dto.task.TaskCreateDto;
-import com.bmisiek.todomanager.areas.admin.dto.task.TaskDto;
+import com.bmisiek.todomanager.areas.data.dto.TaskDto;
 import com.bmisiek.todomanager.areas.admin.dto.task.TaskEditDto;
 import com.bmisiek.todomanager.areas.data.entity.TaskType;
 import com.bmisiek.todomanager.areas.security.dto.LoginDto;

@@ -1,10 +1,10 @@
 package com.bmisiek.todomanager.areas.admin.controller.task;
 
 import com.bmisiek.todomanager.areas.admin.dto.task.TaskCreateDto;
-import com.bmisiek.todomanager.areas.admin.dto.task.TaskDto;
+import com.bmisiek.todomanager.areas.data.dto.TaskDto;
 import com.bmisiek.todomanager.areas.admin.dto.task.TaskEditDto;
 import com.bmisiek.todomanager.areas.admin.service.task.TaskCreator;
-import com.bmisiek.todomanager.areas.admin.service.task.TaskFetcher;
+import com.bmisiek.todomanager.areas.data.service.TaskFetcher;
 import com.bmisiek.todomanager.areas.admin.service.task.TaskEditor;
 import com.bmisiek.todomanager.areas.admin.service.task.TaskRemover;
 import com.bmisiek.todomanager.areas.security.service.UserJwtAuthenticator;

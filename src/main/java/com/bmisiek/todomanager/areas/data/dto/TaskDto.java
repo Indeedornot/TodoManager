@@ -1,4 +1,4 @@
-package com.bmisiek.todomanager.areas.admin.dto.task;
+package com.bmisiek.todomanager.areas.data.dto;
 
 import com.bmisiek.todomanager.areas.data.entity.Task;
 import com.bmisiek.todomanager.areas.data.entity.TaskType;

@@ -1,6 +1,6 @@
-package com.bmisiek.todomanager.areas.admin.service.task;
+package com.bmisiek.todomanager.areas.data.service;
 
-import com.bmisiek.todomanager.areas.admin.dto.task.TaskDto;
+import com.bmisiek.todomanager.areas.data.dto.TaskDto;
 import com.bmisiek.todomanager.areas.data.repository.TaskRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;

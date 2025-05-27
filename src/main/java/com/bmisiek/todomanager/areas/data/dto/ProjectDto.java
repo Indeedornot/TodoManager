@@ -1,4 +1,4 @@
-package com.bmisiek.todomanager.areas.admin.dto.project;
+package com.bmisiek.todomanager.areas.data.dto;
 
 import com.bmisiek.todomanager.areas.data.entity.Project;
 import jakarta.validation.constraints.NotBlank;

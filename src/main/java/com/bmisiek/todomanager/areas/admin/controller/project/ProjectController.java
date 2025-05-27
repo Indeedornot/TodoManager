@@ -1,11 +1,11 @@
 package com.bmisiek.todomanager.areas.admin.controller.project;
 
 import com.bmisiek.todomanager.areas.admin.dto.project.ProjectCreateDto;
-import com.bmisiek.todomanager.areas.admin.dto.project.ProjectDto;
+import com.bmisiek.todomanager.areas.data.dto.ProjectDto;
 import com.bmisiek.todomanager.areas.admin.dto.project.ProjectEditDto;
 import com.bmisiek.todomanager.areas.admin.service.project.ProjectCreator;
 import com.bmisiek.todomanager.areas.admin.service.project.ProjectEditor;
-import com.bmisiek.todomanager.areas.admin.service.project.ProjectFetcher;
+import com.bmisiek.todomanager.areas.data.service.ProjectFetcher;
 import com.bmisiek.todomanager.areas.admin.service.project.ProjectRemover;
 import com.bmisiek.todomanager.areas.security.service.UserJwtAuthenticator;
 import com.bmisiek.todomanager.config.openapi.RequiresJwt;

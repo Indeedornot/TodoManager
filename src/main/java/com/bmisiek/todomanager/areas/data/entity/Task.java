@@ -2,6 +2,8 @@ package com.bmisiek.todomanager.areas.data.entity;
 
 import com.bmisiek.todomanager.areas.security.entity.User;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Data
@@ -13,17 +15,22 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
     private String title;
 
+    @NotBlank
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     private TaskType taskType;
 
+    @NotNull
     @ManyToOne
     private Project project;
 
+    @NotNull
     @OneToOne
     @JoinColumn(name = "assignee_id")
     private User assignee;

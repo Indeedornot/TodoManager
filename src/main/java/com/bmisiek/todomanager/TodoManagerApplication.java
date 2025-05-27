@@ -4,13 +4,13 @@ import com.bmisiek.libraries.seeder.RunOnStartInterface;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
 
 import java.util.Comparator;
 import java.util.List;
 
-@SpringBootApplication(
-        scanBasePackages = "com.bmisiek.libraries"
-)
+@SpringBootApplication
+@ComponentScan(basePackages = {"com.bmisiek.todomanager", "com.bmisiek.libraries.validation"})
 public class TodoManagerApplication {
 
     public static void main(String[] args) {

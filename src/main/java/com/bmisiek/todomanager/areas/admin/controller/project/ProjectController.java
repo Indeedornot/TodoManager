@@ -24,7 +24,7 @@ public class ProjectController {
     @GetMapping("/api/admin/projects")
     public ResponseEntity<List<ProjectDto>> getAll() {
         var user = userAuthenticator.getAuthenticatedUser();
-        var projects = projectFetcher.findByOwnerId(user.getId());
+        var projects = projectFetcher.findAllByOwnerId(user.getId());
         return ResponseEntity.ok(projects);
     }
 

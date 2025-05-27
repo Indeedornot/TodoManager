@@ -32,7 +32,8 @@ public class TaskController {
     @GetMapping("/api/user/tasks/{id}")
     public ResponseEntity<TaskDto> getById(@PathVariable Long id) {
         try {
-            return ResponseEntity.ok(taskFetcher.findById(id));
+            var user = userAuthenticator.getAuthenticatedUser();
+            return ResponseEntity.ok(taskFetcher.findByIdForAssigneeId(id, user.getId()));
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }

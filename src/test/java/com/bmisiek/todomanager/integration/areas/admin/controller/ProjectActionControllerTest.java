@@ -5,6 +5,7 @@ import com.bmisiek.libraries.mockmvc.MyRequestBuilders;
 import com.bmisiek.todomanager.areas.admin.dto.project.ProjectCreateDto;
 import com.bmisiek.todomanager.areas.admin.dto.project.ProjectEditDto;
 import com.bmisiek.todomanager.integration.config.IntegrationTest;
+import com.bmisiek.todomanager.integration.utilities.TestEntityHandler;
 import com.bmisiek.todomanager.integration.utilities.TestUserHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class ProjectActionControllerTest {
 
     @Autowired
     private TestUserHandler testUserHandler;
+
+    @Autowired
+    private TestEntityHandler testEntityHandler;
 
     @Test
     public void Should_ProtectEndpointsWithJwt() throws Exception {
@@ -37,7 +41,7 @@ public class ProjectActionControllerTest {
     @Test
     public void Should_CreateProject_WhenAuthenticated() throws Exception {
         String token = testUserHandler.createAdminAndGetToken(1L);
-        Long projectId = createProject(new ProjectCreateDto("test", "test"), token);
+        Long projectId = testEntityHandler.createProject(new ProjectCreateDto("test", "test"), token);
 
         mockMvc.perform(MyRequestBuilders.getAuthed("/api/admin/projects/" + projectId, token))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -66,7 +70,7 @@ public class ProjectActionControllerTest {
     @Test
     public void Should_EditProject() throws Exception {
         String token = testUserHandler.createAdminAndGetToken(1L);
-        Long projectId = createProject(new ProjectCreateDto("test", "test"), token);
+        Long projectId = testEntityHandler.createProject(new ProjectCreateDto("test", "test"), token);
 
         var editDto = new ProjectEditDto(projectId, "updated1", "updated2");
         mockMvc.perform(MyRequestBuilders.putJson("/api/admin/projects/" + projectId, editDto, token))
@@ -81,7 +85,7 @@ public class ProjectActionControllerTest {
     @Test
     public void Should_NotEditProject_WhenIdMismatch() throws Exception {
         String token = testUserHandler.createAdminAndGetToken(1L);
-        Long projectId = createProject(new ProjectCreateDto("test", "test"), token);
+        Long projectId = testEntityHandler.createProject(new ProjectCreateDto("test", "test"), token);
 
         var editDto = new ProjectEditDto(projectId, "updated1", "updated2");
         editDto.setId(projectId + 1);
@@ -104,7 +108,7 @@ public class ProjectActionControllerTest {
         var ownerToken = testUserHandler.createAdminAndGetToken(1L);
         var otherUserToken = testUserHandler.createAdminAndGetToken(2L);
 
-        Long projectId = createProject(new ProjectCreateDto("test", "test"), ownerToken);
+        Long projectId = testEntityHandler.createProject(new ProjectCreateDto("test", "test"), ownerToken);
 
         var editDto = new ProjectEditDto(projectId, "updated1", "updated2");
         mockMvc.perform(MyRequestBuilders.putJson("/api/admin/projects/" + projectId, editDto, otherUserToken))
@@ -114,7 +118,7 @@ public class ProjectActionControllerTest {
     @Test
     public void Should_NotEdit_WhenInvalidData() throws Exception {
         String token = testUserHandler.createAdminAndGetToken(1L);
-        Long projectId = createProject(new ProjectCreateDto("test", "test"), token);
+        Long projectId = testEntityHandler.createProject(new ProjectCreateDto("test", "test"), token);
 
         var invalidEditDtos =  new ProjectEditDto[] {
                 new ProjectEditDto(projectId, "", ""),
@@ -133,7 +137,7 @@ public class ProjectActionControllerTest {
         var ownerToken = testUserHandler.createAdminAndGetToken(1L);
         var otherUserToken = testUserHandler.createAdminAndGetToken(2L);
 
-        Long projectId = createProject(new ProjectCreateDto("test", "test"), ownerToken);
+        Long projectId = testEntityHandler.createProject(new ProjectCreateDto("test", "test"), ownerToken);
 
         mockMvc.perform(MyRequestBuilders.deleteAuthed("/api/admin/projects/" + projectId, otherUserToken))
                 .andExpect(MockMvcResultMatchers.status().isForbidden());
@@ -142,7 +146,7 @@ public class ProjectActionControllerTest {
     @Test
     public void Should_DeleteProject() throws Exception {
         String token = testUserHandler.createAdminAndGetToken(1L);
-        Long projectId = createProject(new ProjectCreateDto("test", "test"), token);
+        Long projectId = testEntityHandler.createProject(new ProjectCreateDto("test", "test"), token);
         mockMvc.perform(MyRequestBuilders.deleteAuthed("/api/admin/projects/" + projectId, token))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
@@ -152,13 +156,5 @@ public class ProjectActionControllerTest {
         String token = testUserHandler.createAdminAndGetToken(1L);
         mockMvc.perform(MyRequestBuilders.deleteAuthed("/api/admin/projects/999", token))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
-    }
-
-    private Long createProject(ProjectCreateDto dto, String token) throws Exception {
-        var id = mockMvc
-                .perform(MyRequestBuilders.postJson("/api/admin/projects", dto, token))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn().getResponse().getContentAsString();
-        return Long.parseLong(id);
     }
 }

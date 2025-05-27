@@ -6,6 +6,7 @@ import com.bmisiek.todomanager.areas.admin.dto.task.TaskCreateDto;
 import com.bmisiek.todomanager.areas.data.dto.TaskDto;
 import com.bmisiek.todomanager.areas.data.entity.TaskType;
 import com.bmisiek.todomanager.integration.config.IntegrationTest;
+import com.bmisiek.todomanager.integration.utilities.TestEntityHandler;
 import com.bmisiek.todomanager.integration.utilities.TestUserHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
@@ -23,16 +24,17 @@ public class TaskControllerTest {
     @Autowired
     private TestUserHandler testUserHandler;
 
+    @Autowired
+    private TestEntityHandler testEntityHandler;
+
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     public void Should_ProtectEndpointsWithJwt() throws Exception {
         var requests = new MockHttpServletRequestBuilder[] {
-                MyRequestBuilders.get("/api/admin/tasks"),
-                MyRequestBuilders.post("/api/admin/tasks"),
+                MyRequestBuilders.get("/api/admin/projects/1/tasks"),
                 MyRequestBuilders.get("/api/admin/tasks/1"),
-                MyRequestBuilders.put("/api/admin/tasks/1"),
-                MyRequestBuilders.delete("/api/admin/tasks/1")
+                MyRequestBuilders.get("/api/admin/tasks/assignee/1")
         };
 
         for (MockHttpServletRequestBuilder request : requests) {
@@ -50,44 +52,74 @@ public class TaskControllerTest {
         var otherUser = testUserHandler.getUser(2L);
 
         var projectCreateDto = new ProjectCreateDto("Test Project", "Description");
-        Long projectId = createProject(projectCreateDto, token);
+        Long projectId = testEntityHandler.createProject(projectCreateDto, token);
 
         var taskCreateDto = new TaskCreateDto("Test Task", "Task Description", TaskType.BUG, projectId, currentUser.getId());
-        Long taskId = createTask(taskCreateDto, token);
+        Long taskId = testEntityHandler.createTask(taskCreateDto, token);
 
         var otherTaskCreateDto = new TaskCreateDto("Other Task", "Other Description", TaskType.FEATURE, projectId, otherUser.getId());
-        createTask(otherTaskCreateDto, token);
+        testEntityHandler.createTask(otherTaskCreateDto, token);
 
-        var returnJson = mockMvc.perform(MyRequestBuilders.getAuthed("/api/admin/tasks", token))
+        var returnJson = mockMvc.perform(MyRequestBuilders.getAuthed("/api/admin/tasks/assignee/" + currentUser.getId(), token))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
         var tasks = objectMapper.readValue(returnJson, TaskDto[].class);
-        var expectedTask = new TaskDto(
-                taskId,
-                taskCreateDto.getTitle(),
-                taskCreateDto.getDescription(),
-                taskCreateDto.getTaskType(),
-                taskCreateDto.getProjectId(),
-                taskCreateDto.getAssigneeId()
-        );
         Assertions.assertEquals(1, tasks.length);
-        Assertions.assertEquals(tasks[0], expectedTask);
+        testEntityHandler.AssertEquals(tasks[0], taskId, taskCreateDto);
     }
 
-    private Long createProject(ProjectCreateDto projectCreateDto, String token) throws Exception {
-        var result = mockMvc.perform(MyRequestBuilders.postJson("/api/admin/projects", projectCreateDto, token))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn();
+    @Test
+    public void Should_ListTasks_OnlyForProject() throws Exception {
+        var token = testUserHandler.createAdminAndGetToken(1L);
+        var currentUser = testUserHandler.getUser(1L);
 
-        return Long.parseLong(result.getResponse().getContentAsString());
+        testUserHandler.createAdminAndGetToken(2L);
+        var otherUser = testUserHandler.getUser(2L);
+
+        Long projectId = testEntityHandler.createProject(new ProjectCreateDto("Test Project", "Description"), token);
+        Long otherProjectId = testEntityHandler.createProject(new ProjectCreateDto("Other Project", "Other Description"), token);
+
+        var taskCreateDto = new TaskCreateDto("Test Task", "Task Description", TaskType.BUG, projectId, currentUser.getId());
+        Long task1Id = testEntityHandler.createTask(taskCreateDto, token);
+
+        var otherTaskCreateDto = new TaskCreateDto("Other Task", "Other Description", TaskType.FEATURE, otherProjectId, otherUser.getId());
+        Long task2Id = testEntityHandler.createTask(otherTaskCreateDto, token);
+
+        var returnJson = mockMvc.perform(MyRequestBuilders.getAuthed("/api/admin/projects/" + projectId + "/tasks", token))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        var tasks = objectMapper.readValue(returnJson, TaskDto[].class);
+
+        Assertions.assertEquals(1, tasks.length);
+        testEntityHandler.AssertEquals(tasks[0], task1Id, taskCreateDto);
     }
 
-    private Long createTask(TaskCreateDto taskCreateDto, String token) throws Exception {
-        var result = mockMvc.perform(MyRequestBuilders.postJson("/api/admin/tasks", taskCreateDto, token))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn();
+    @Test
+    public void Should_GetTask() throws Exception {
+        var token = testUserHandler.createAdminAndGetToken(1L);
+        var currentUser = testUserHandler.getUser(1L);
 
-        return Long.parseLong(result.getResponse().getContentAsString());
+        Long projectId = testEntityHandler.createProject(new ProjectCreateDto("Test Project", "Description"), token);
+
+        var taskCreateDto = new TaskCreateDto("Test Task", "Task Description", TaskType.BUG, projectId, currentUser.getId());
+        Long taskId = testEntityHandler.createTask(taskCreateDto, token);
+
+        var returnJson = mockMvc.perform(MyRequestBuilders.getAuthed("/api/admin/tasks/" + taskId, token))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        var task = objectMapper.readValue(returnJson, TaskDto.class);
+        testEntityHandler.AssertEquals(task, taskId, taskCreateDto);
+    }
+
+    @Test
+    public void Should_Not_GetTask_WhenNotFound() throws Exception {
+        var token = testUserHandler.createAdminAndGetToken(1L);
+        var taskId = 999L;
+
+        mockMvc.perform(MyRequestBuilders.getAuthed("/api/admin/tasks/" + taskId, token))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 }

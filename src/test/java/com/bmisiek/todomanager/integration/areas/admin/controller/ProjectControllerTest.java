@@ -3,6 +3,7 @@ package com.bmisiek.todomanager.integration.areas.admin.controller;
 import com.bmisiek.libraries.mockmvc.MyRequestBuilders;
 import com.bmisiek.todomanager.areas.admin.dto.project.ProjectCreateDto;
 import com.bmisiek.todomanager.integration.config.IntegrationTest;
+import com.bmisiek.todomanager.integration.utilities.TestEntityHandler;
 import com.bmisiek.todomanager.integration.utilities.TestUserHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,9 @@ public class ProjectControllerTest {
 
     @Autowired
     private TestUserHandler testUserHandler;
+
+    @Autowired
+    private TestEntityHandler testEntityHandler;
 
     @Test
     public void Should_ProtectEndpointsWithJwt() throws Exception {
@@ -41,20 +45,12 @@ public class ProjectControllerTest {
     @Test
     public void Should_FindMultipleProjects() throws Exception {
         String token = testUserHandler.createAdminAndGetToken(1L);
-        Long projectId1 = createProject(new ProjectCreateDto("test1", "test1"), token);
-        Long projectId2 = createProject(new ProjectCreateDto("test2", "test2"), token);
+        Long projectId1 = testEntityHandler.createProject(new ProjectCreateDto("test1", "test1"), token);
+        Long projectId2 = testEntityHandler.createProject(new ProjectCreateDto("test2", "test2"), token);
 
         mockMvc.perform(MyRequestBuilders.getAuthed("/api/admin/projects", token))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(projectId1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(projectId2));
-    }
-
-    private Long createProject(ProjectCreateDto dto, String token) throws Exception {
-        var id = mockMvc
-                .perform(MyRequestBuilders.postJson("/api/admin/projects", dto, token))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn().getResponse().getContentAsString();
-        return Long.parseLong(id);
     }
 }

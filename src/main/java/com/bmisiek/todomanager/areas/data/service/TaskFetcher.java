@@ -23,7 +23,7 @@ public class TaskFetcher {
         return new TaskDto(task);
     }
 
-    public TaskDto findByIdForAssigneeId(Long id, Long assigneeId) throws IllegalArgumentException {
+    public TaskDto findByIdForAssigneeId(Long id, Long assigneeId) throws EntityNotFoundException, AccessDeniedException {
         var task = taskRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Task not found with id: " + id));
 
@@ -34,8 +34,15 @@ public class TaskFetcher {
         return new TaskDto(task);
     }
 
-    public List<TaskDto> findByAssigneId(Long assigneeId) {
+    public List<TaskDto> findAllByAssigneId(Long assigneeId) {
         return taskRepository.findAllByAssignee_Id(assigneeId)
+                .stream()
+                .map(TaskDto::new)
+                .collect(Collectors.toList());
+    }
+
+    public List<TaskDto> findByProjectId(Long projectId) {
+        return taskRepository.findAllByProject_Id(projectId)
                 .stream()
                 .map(TaskDto::new)
                 .collect(Collectors.toList());

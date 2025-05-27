@@ -8,6 +8,7 @@ import com.bmisiek.todomanager.areas.data.dto.TaskDto;
 import com.bmisiek.todomanager.areas.data.entity.TaskType;
 import com.bmisiek.todomanager.areas.security.entity.User;
 import com.bmisiek.todomanager.integration.config.IntegrationTest;
+import com.bmisiek.todomanager.integration.utilities.TestEntityHandler;
 import com.bmisiek.todomanager.integration.utilities.TestUserHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
@@ -25,13 +26,19 @@ public class TaskActionControllerTest {
     @Autowired
     private TestUserHandler testUserHandler;
 
+    @Autowired
+    private TestEntityHandler testEntityHandler;
+
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     public void Should_ProtectEndpointsWithJwt() throws Exception {
         var requests = new MockHttpServletRequestBuilder[] {
                 MyRequestBuilders.get("/api/admin/tasks"),
-                MyRequestBuilders.get("/api/admin/tasks/1")
+                MyRequestBuilders.post("/api/admin/tasks"),
+                MyRequestBuilders.get("/api/admin/tasks/1"),
+                MyRequestBuilders.put("/api/admin/tasks/1"),
+                MyRequestBuilders.delete("/api/admin/tasks/1")
         };
 
         for (MockHttpServletRequestBuilder request : requests) {
@@ -46,10 +53,10 @@ public class TaskActionControllerTest {
         var user = testUserHandler.getUser(1L);
 
         var projectCreateDto = new ProjectCreateDto("Test Project", "Description");
-        Long projectId = createProject(projectCreateDto, token);
+        Long projectId = testEntityHandler.createProject(projectCreateDto, token);
 
         var taskCreateDto = new TaskCreateDto("Test Task", "Task Description", TaskType.BUG, projectId, user.getId());
-        Long taskId = createTask(taskCreateDto, token);
+        Long taskId = testEntityHandler.createTask(taskCreateDto, token);
 
         var returnJson = mockMvc.perform(MyRequestBuilders.getAuthed("/api/admin/tasks/" + taskId, token))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -72,7 +79,7 @@ public class TaskActionControllerTest {
         var user = testUserHandler.getUser(1L);
 
         var projectCreateDto = new ProjectCreateDto("Test Project", "Description");
-        Long projectId = createProject(projectCreateDto, token);
+        Long projectId = testEntityHandler.createProject(projectCreateDto, token);
 
         var invalidTaskCreateDtos = new TaskCreateDto[]{
                 new TaskCreateDto("", "Task Description", TaskType.BUG, projectId, user.getId()),
@@ -92,7 +99,7 @@ public class TaskActionControllerTest {
     public void Should_NotCreateTask_WhenNotProjectOwner() throws Exception {
         var ownerToken = testUserHandler.createAdminAndGetToken(1L);
         var projectCreateDto = new ProjectCreateDto("Test Project", "Description");
-        Long projectId = createProject(projectCreateDto, ownerToken);
+        Long projectId = testEntityHandler.createProject(projectCreateDto, ownerToken);
 
         String otherUserToken = testUserHandler.createAdminAndGetToken(2L);
         User otherUser = testUserHandler.getUser(2L);
@@ -108,10 +115,10 @@ public class TaskActionControllerTest {
         var user = testUserHandler.getUser(1L);
 
         var projectCreateDto = new ProjectCreateDto("Test Project", "Description");
-        Long projectId = createProject(projectCreateDto, token);
+        Long projectId = testEntityHandler.createProject(projectCreateDto, token);
 
         var taskCreateDto = new TaskCreateDto("Test Task", "Task Description", TaskType.BUG, projectId, user.getId());
-        Long taskId = createTask(taskCreateDto, token);
+        Long taskId = testEntityHandler.createTask(taskCreateDto, token);
 
         var invalidEditDtos = new TaskCreateDto[]{
                 new TaskCreateDto("", "Updated Description", TaskType.BUG, projectId, user.getId()),
@@ -133,10 +140,10 @@ public class TaskActionControllerTest {
         var user = testUserHandler.getUser(1L);
 
         var projectCreateDto = new ProjectCreateDto("Test Project", "Description");
-        Long projectId = createProject(projectCreateDto, token);
+        Long projectId = testEntityHandler.createProject(projectCreateDto, token);
 
         var taskCreateDto = new TaskCreateDto("Test Task", "Task Description", TaskType.BUG, projectId, user.getId());
-        Long taskId = createTask(taskCreateDto, token);
+        Long taskId = testEntityHandler.createTask(taskCreateDto, token);
 
         var updatedTaskDto = new TaskEditDto(taskId, "Updated Task", "Updated Description");
         mockMvc.perform(MyRequestBuilders.putJson("/api/admin/tasks/" + taskId, updatedTaskDto, token))
@@ -164,10 +171,10 @@ public class TaskActionControllerTest {
         var otherUserToken = testUserHandler.createAdminAndGetToken(2L);
 
         var projectCreateDto = new ProjectCreateDto("Test Project", "Description");
-        Long projectId = createProject(projectCreateDto, ownerToken);
+        Long projectId = testEntityHandler.createProject(projectCreateDto, ownerToken);
 
         var taskCreateDto = new TaskCreateDto("Test Task", "Task Description", TaskType.BUG, projectId, ownerUser.getId());
-        Long taskId = createTask(taskCreateDto, ownerToken);
+        Long taskId = testEntityHandler.createTask(taskCreateDto, ownerToken);
 
         var updatedTaskDto = new TaskEditDto(taskId, "Updated Task", "Updated Description");
         mockMvc.perform(MyRequestBuilders.putJson("/api/admin/tasks/" + taskId, updatedTaskDto, otherUserToken))
@@ -189,10 +196,10 @@ public class TaskActionControllerTest {
         var user = testUserHandler.getUser(1L);
 
         var projectCreateDto = new ProjectCreateDto("Test Project", "Description");
-        Long projectId = createProject(projectCreateDto, token);
+        Long projectId = testEntityHandler.createProject(projectCreateDto, token);
 
         var taskCreateDto = new TaskCreateDto("Test Task", "Task Description", TaskType.BUG, projectId, user.getId());
-        Long taskId = createTask(taskCreateDto, token);
+        Long taskId = testEntityHandler.createTask(taskCreateDto, token);
 
         mockMvc.perform(MyRequestBuilders.deleteAuthed("/api/admin/tasks/" + taskId, token))
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -208,10 +215,10 @@ public class TaskActionControllerTest {
         var otherUserToken = testUserHandler.createAdminAndGetToken(2L);
 
         var projectCreateDto = new ProjectCreateDto("Test Project", "Description");
-        Long projectId = createProject(projectCreateDto, ownerToken);
+        Long projectId = testEntityHandler.createProject(projectCreateDto, ownerToken);
 
         var taskCreateDto = new TaskCreateDto("Test Task", "Task Description", TaskType.BUG, projectId, ownerUser.getId());
-        Long taskId = createTask(taskCreateDto, ownerToken);
+        Long taskId = testEntityHandler.createTask(taskCreateDto, ownerToken);
 
         mockMvc.perform(MyRequestBuilders.deleteAuthed("/api/admin/tasks/" + taskId, otherUserToken))
                 .andExpect(MockMvcResultMatchers.status().isForbidden());
@@ -222,21 +229,5 @@ public class TaskActionControllerTest {
         String token = testUserHandler.createAdminAndGetToken(1L);
         mockMvc.perform(MyRequestBuilders.deleteAuthed("/api/admin/tasks/999", token))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
-    }
-
-    private Long createProject(ProjectCreateDto projectCreateDto, String token) throws Exception {
-        var result = mockMvc.perform(MyRequestBuilders.postJson("/api/admin/projects", projectCreateDto, token))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn();
-
-        return Long.parseLong(result.getResponse().getContentAsString());
-    }
-
-    private Long createTask(TaskCreateDto taskCreateDto, String token) throws Exception {
-        var result = mockMvc.perform(MyRequestBuilders.postJson("/api/admin/tasks", taskCreateDto, token))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn();
-
-        return Long.parseLong(result.getResponse().getContentAsString());
     }
 }

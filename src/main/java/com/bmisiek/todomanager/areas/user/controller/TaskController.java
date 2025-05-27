@@ -7,6 +7,7 @@ import com.bmisiek.todomanager.areas.security.service.UserJwtAuthenticator;
 import com.bmisiek.todomanager.config.openapi.RequiresJwt;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class TaskController {
     @GetMapping("/api/user/tasks")
     public ResponseEntity<List<TaskDto>> getAll() {
         var user = userAuthenticator.getAuthenticatedUser();
-        var projects = taskFetcher.findByAssigneId(user.getId());
+        var projects = taskFetcher.findAllByAssigneId(user.getId());
         return ResponseEntity.ok(projects);
     }
 
@@ -36,6 +37,8 @@ public class TaskController {
             return ResponseEntity.ok(taskFetcher.findByIdForAssigneeId(id, user.getId()));
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(403).build();
         }
     }
 }

@@ -59,10 +59,16 @@ public class ProjectControllerTest {
     @Test
     public void Should_NotCreateProject_WhenInvalidData() throws Exception {
         String token = createUserAndGetToken(1L);
-        var invalidDto = new ProjectCreateDto("", "");
+        var invalidDtos = new ProjectCreateDto[] {
+                new ProjectCreateDto("", ""),
+                new ProjectCreateDto("test", ""),
+                new ProjectCreateDto("", "test")
+        };
 
-        mockMvc.perform(MyRequestBuilders.postJson("/api/admin/projects", invalidDto, token))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+        for (var invalidDto : invalidDtos) {
+            mockMvc.perform(MyRequestBuilders.postJson("/api/admin/projects", invalidDto, token))
+                    .andExpect(MockMvcResultMatchers.status().isBadRequest());
+        }
     }
 
     @Test
@@ -118,9 +124,16 @@ public class ProjectControllerTest {
         String token = createUserAndGetToken(1L);
         Long projectId = createProject(new ProjectCreateDto("test", "test"), token);
 
-        var invalidEditDto = new ProjectEditDto(projectId, "", "");
-        mockMvc.perform(MyRequestBuilders.putJson("/api/admin/projects/" + projectId, invalidEditDto, token))
+        var invalidEditDtos =  new ProjectEditDto[] {
+                new ProjectEditDto(projectId, "", ""),
+                new ProjectEditDto(projectId, "test", ""),
+                new ProjectEditDto(projectId, "", "test")
+        };
+
+        for (var invalidEditDto : invalidEditDtos) {
+            mockMvc.perform(MyRequestBuilders.putJson("/api/admin/projects/" + projectId, invalidEditDto, token))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
+        }
     }
 
     @Test

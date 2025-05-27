@@ -40,7 +40,7 @@ public class TaskEditor {
         return foundProject.get();
     }
 
-    private void validateProjectOwnership(Project project, User user) {
+    private void validateProjectOwnership(Project project, User user) throws AccessDeniedException {
         if (project.getOwner().getId() != user.getId()) {
             throw new AccessDeniedException("User does not own this project");
         }

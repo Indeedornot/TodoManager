@@ -2,7 +2,6 @@ package com.bmisiek.todomanager.areas.admin.service.task;
 
 import com.bmisiek.todomanager.areas.data.entity.Project;
 import com.bmisiek.todomanager.areas.data.entity.Task;
-import com.bmisiek.todomanager.areas.data.repository.ProjectRepository;
 import com.bmisiek.todomanager.areas.data.repository.TaskRepository;
 import com.bmisiek.todomanager.areas.security.entity.User;
 import jakarta.persistence.EntityNotFoundException;

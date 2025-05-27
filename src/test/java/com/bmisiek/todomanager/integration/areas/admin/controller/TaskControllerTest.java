@@ -55,15 +55,21 @@ public class TaskControllerTest {
     }
 
     @Test
-    public void Should_ListTasks() throws Exception {
+    public void Should_ListTasks_OnlyForAssigned() throws Exception {
         var token = createUserAndGetToken(1L);
-        var user = getUser(1L);
+        var currentUser = getUser(1L);
+
+        createUserAndGetToken(2L);
+        var otherUser = getUser(2L);
 
         var projectCreateDto = new ProjectCreateDto("Test Project", "Description");
         Long projectId = createProject(projectCreateDto, token);
 
-        var taskCreateDto = new TaskCreateDto("Test Task", "Task Description", TaskType.BUG, projectId, user.getId());
+        var taskCreateDto = new TaskCreateDto("Test Task", "Task Description", TaskType.BUG, projectId, currentUser.getId());
         Long taskId = createTask(taskCreateDto, token);
+
+        var otherTaskCreateDto = new TaskCreateDto("Other Task", "Other Description", TaskType.FEATURE, projectId, otherUser.getId());
+        createTask(otherTaskCreateDto, token);
 
         var returnJson = mockMvc.perform(MyRequestBuilders.getAuthed("/api/admin/tasks", token))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -78,6 +84,7 @@ public class TaskControllerTest {
                 taskCreateDto.getProjectId(),
                 taskCreateDto.getAssigneeId()
         );
+        Assertions.assertEquals(1, tasks.length);
         Assertions.assertEquals(tasks[0], expectedTask);
     }
 

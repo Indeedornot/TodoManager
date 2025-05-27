@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@RestController("UserTaskController")
 @RequiresJwt
 public class TaskController {
     private final TaskFetcher taskFetcher;

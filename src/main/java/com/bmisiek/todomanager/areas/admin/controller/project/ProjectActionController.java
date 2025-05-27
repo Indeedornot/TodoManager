@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@RestController("AdminProjectActionController")
 @RequiresJwt
 public class ProjectActionController {
     private final ProjectCreator projectCreator;

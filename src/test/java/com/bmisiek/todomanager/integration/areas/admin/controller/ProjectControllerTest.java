@@ -1,8 +1,8 @@
 package com.bmisiek.todomanager.integration.areas.admin.controller;
 
 import com.bmisiek.libraries.mockmvc.MyRequestBuilders;
-import com.bmisiek.todomanager.areas.admin.dto.ProjectCreateDto;
-import com.bmisiek.todomanager.areas.admin.dto.ProjectEditDto;
+import com.bmisiek.todomanager.areas.admin.dto.project.ProjectCreateDto;
+import com.bmisiek.todomanager.areas.admin.dto.project.ProjectEditDto;
 import com.bmisiek.todomanager.areas.security.dto.LoginDto;
 import com.bmisiek.todomanager.areas.security.dto.SignUpDto;
 import com.bmisiek.todomanager.areas.security.entity.RoleEnum;

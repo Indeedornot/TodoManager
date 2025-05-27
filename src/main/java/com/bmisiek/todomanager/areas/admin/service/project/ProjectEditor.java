@@ -1,6 +1,6 @@
-package com.bmisiek.todomanager.areas.admin.service;
+package com.bmisiek.todomanager.areas.admin.service.project;
 
-import com.bmisiek.todomanager.areas.admin.dto.ProjectEditDto;
+import com.bmisiek.todomanager.areas.admin.dto.project.ProjectEditDto;
 import com.bmisiek.todomanager.areas.data.entity.Project;
 import com.bmisiek.todomanager.areas.data.repository.ProjectRepository;
 import com.bmisiek.todomanager.areas.security.entity.User;

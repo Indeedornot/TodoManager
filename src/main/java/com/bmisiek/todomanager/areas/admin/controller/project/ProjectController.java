@@ -1,12 +1,12 @@
-package com.bmisiek.todomanager.areas.admin.controller;
+package com.bmisiek.todomanager.areas.admin.controller.project;
 
-import com.bmisiek.todomanager.areas.admin.dto.ProjectCreateDto;
-import com.bmisiek.todomanager.areas.admin.dto.ProjectDto;
-import com.bmisiek.todomanager.areas.admin.dto.ProjectEditDto;
-import com.bmisiek.todomanager.areas.admin.service.ProjectCreator;
-import com.bmisiek.todomanager.areas.admin.service.ProjectEditor;
-import com.bmisiek.todomanager.areas.admin.service.ProjectFetcher;
-import com.bmisiek.todomanager.areas.admin.service.ProjectRemover;
+import com.bmisiek.todomanager.areas.admin.dto.project.ProjectCreateDto;
+import com.bmisiek.todomanager.areas.admin.dto.project.ProjectDto;
+import com.bmisiek.todomanager.areas.admin.dto.project.ProjectEditDto;
+import com.bmisiek.todomanager.areas.admin.service.project.ProjectCreator;
+import com.bmisiek.todomanager.areas.admin.service.project.ProjectEditor;
+import com.bmisiek.todomanager.areas.admin.service.project.ProjectFetcher;
+import com.bmisiek.todomanager.areas.admin.service.project.ProjectRemover;
 import com.bmisiek.todomanager.areas.security.service.UserJwtAuthenticator;
 import com.bmisiek.todomanager.config.openapi.RequiresJwt;
 import jakarta.persistence.EntityNotFoundException;

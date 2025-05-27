@@ -1,11 +1,10 @@
-package com.bmisiek.todomanager.areas.admin.service;
+package com.bmisiek.todomanager.areas.admin.service.project;
 
-import com.bmisiek.todomanager.areas.admin.dto.ProjectDto;
+import com.bmisiek.todomanager.areas.admin.dto.project.ProjectDto;
 import com.bmisiek.todomanager.areas.data.repository.ProjectRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 

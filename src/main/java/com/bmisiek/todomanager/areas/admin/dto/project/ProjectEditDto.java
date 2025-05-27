@@ -1,4 +1,4 @@
-package com.bmisiek.todomanager.areas.admin.dto;
+package com.bmisiek.todomanager.areas.admin.dto.project;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

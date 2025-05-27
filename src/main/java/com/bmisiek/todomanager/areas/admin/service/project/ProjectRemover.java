@@ -1,4 +1,4 @@
-package com.bmisiek.todomanager.areas.admin.service;
+package com.bmisiek.todomanager.areas.admin.service.project;
 
 import com.bmisiek.todomanager.areas.data.entity.Project;
 import com.bmisiek.todomanager.areas.data.repository.ProjectRepository;
@@ -6,8 +6,6 @@ import com.bmisiek.todomanager.areas.security.entity.User;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class ProjectRemover {

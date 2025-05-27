@@ -1,5 +1,6 @@
 package com.bmisiek.todomanager.areas.admin.service.project;
 
+import com.bmisiek.libraries.validation.ValidatorInterface;
 import com.bmisiek.todomanager.areas.admin.dto.project.ProjectEditDto;
 import com.bmisiek.todomanager.areas.data.entity.Project;
 import com.bmisiek.todomanager.areas.data.repository.ProjectRepository;
@@ -11,8 +12,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProjectEditor {
     private final ProjectRepository projectRepository;
-    public ProjectEditor(ProjectRepository projectRepository) {
+    private final ValidatorInterface validator;
+
+    public ProjectEditor(ProjectRepository projectRepository, ValidatorInterface validator) {
         this.projectRepository = projectRepository;
+        this.validator = validator;
     }
 
     public void edit(ProjectEditDto projectEditDto, User user) throws IllegalArgumentException, AccessDeniedException, EntityNotFoundException {
@@ -42,11 +46,6 @@ public class ProjectEditor {
     }
 
     private void validateEditDto(ProjectEditDto projectEditDto) throws IllegalArgumentException {
-        if (projectEditDto.getName() == null || projectEditDto.getName().isEmpty()) {
-            throw new IllegalArgumentException("Project name cannot be empty");
-        }
-        if (projectEditDto.getDescription() == null || projectEditDto.getDescription().isEmpty()) {
-            throw new IllegalArgumentException("Project description cannot be empty");
-        }
+        validator.assertValid(projectEditDto);
     }
 }

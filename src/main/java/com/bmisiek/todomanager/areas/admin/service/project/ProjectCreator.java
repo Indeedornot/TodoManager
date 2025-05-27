@@ -1,5 +1,6 @@
 package com.bmisiek.todomanager.areas.admin.service.project;
 
+import com.bmisiek.libraries.validation.ValidatorInterface;
 import com.bmisiek.todomanager.areas.admin.dto.project.ProjectCreateDto;
 import com.bmisiek.todomanager.areas.data.entity.Project;
 import com.bmisiek.todomanager.areas.data.repository.ProjectRepository;
@@ -11,18 +12,15 @@ import java.util.HashSet;
 @Service
 public class ProjectCreator {
     private final ProjectRepository projectRepository;
+    private final ValidatorInterface validator;
 
-    public ProjectCreator(ProjectRepository projectRepository) {
+    public ProjectCreator(ProjectRepository projectRepository, ValidatorInterface validator) {
         this.projectRepository = projectRepository;
+        this.validator = validator;
     }
 
     private void validate(ProjectCreateDto dto) throws IllegalArgumentException {
-        if (dto.getName() == null || dto.getName().isEmpty()) {
-            throw new IllegalArgumentException("Project name cannot be empty");
-        }
-        if (dto.getDescription() == null || dto.getDescription().isEmpty()) {
-            throw new IllegalArgumentException("Project description cannot be empty");
-        }
+        validator.assertValid(dto);
     }
 
     public Long create(ProjectCreateDto dto, User user) throws IllegalArgumentException {

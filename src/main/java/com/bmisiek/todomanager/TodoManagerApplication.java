@@ -8,7 +8,9 @@ import org.springframework.context.ApplicationContext;
 import java.util.Comparator;
 import java.util.List;
 
-@SpringBootApplication
+@SpringBootApplication(
+        scanBasePackages = "com.bmisiek.libraries"
+)
 public class TodoManagerApplication {
 
     public static void main(String[] args) {

@@ -1,5 +1,6 @@
 package com.bmisiek.todomanager.areas.admin.dto.project;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProjectCreateDto {
-    private String name;
-    private String description;
+    @NotBlank private String name;
+    @NotBlank private String description;
 }

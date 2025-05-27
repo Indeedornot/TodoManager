@@ -1,5 +1,6 @@
 package com.bmisiek.todomanager.areas.admin.service.task;
 
+import com.bmisiek.libraries.validation.ValidatorInterface;
 import com.bmisiek.todomanager.areas.admin.dto.task.TaskEditDto;
 import com.bmisiek.todomanager.areas.data.entity.Project;
 import com.bmisiek.todomanager.areas.data.entity.Task;
@@ -12,8 +13,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class TaskEditor {
     private final TaskRepository taskRepository;
-    public TaskEditor(TaskRepository taskRepository) {
+    private final ValidatorInterface validator;
+
+    public TaskEditor(TaskRepository taskRepository, ValidatorInterface validator) {
         this.taskRepository = taskRepository;
+        this.validator = validator;
     }
 
     public void edit(TaskEditDto taskEditDto, User user) throws IllegalArgumentException, AccessDeniedException, EntityNotFoundException {
@@ -43,11 +47,6 @@ public class TaskEditor {
     }
 
     private void validateEditDto(TaskEditDto taskEditDto) throws IllegalArgumentException {
-        if (taskEditDto.getTitle() == null || taskEditDto.getTitle().isEmpty()) {
-            throw new IllegalArgumentException("Task name cannot be empty");
-        }
-        if (taskEditDto.getDescription() == null || taskEditDto.getDescription().isEmpty()) {
-            throw new IllegalArgumentException("Task description cannot be empty");
-        }
+        validator.assertValid(taskEditDto);
     }
 }

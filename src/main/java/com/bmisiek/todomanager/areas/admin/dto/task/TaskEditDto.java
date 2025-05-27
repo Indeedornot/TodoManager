@@ -1,5 +1,7 @@
 package com.bmisiek.todomanager.areas.admin.dto.task;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,10 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TaskEditDto {
-    private Long id;
-    private String title;
-    private String description;
-//    private String taskType;
-//    private Long projectId;
-//    private Long assigneeId;
+    @NotNull private Long id;
+    @NotBlank private String title;
+    @NotBlank private String description;
 }

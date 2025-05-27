@@ -36,4 +36,13 @@ public class TaskController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/api/admin/tasks/assignee/{assigneeId}")
+    public ResponseEntity<List<TaskDto>> getByAssigneeId(@PathVariable Long assigneeId) {
+        try {
+            return ResponseEntity.ok(taskFetcher.findByAssigneId(assigneeId));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

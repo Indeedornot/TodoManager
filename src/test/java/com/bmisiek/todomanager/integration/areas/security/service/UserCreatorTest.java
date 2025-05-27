@@ -7,16 +7,14 @@ import com.bmisiek.todomanager.areas.security.entity.RoleEnum;
 import com.bmisiek.todomanager.areas.security.entity.User;
 import com.bmisiek.todomanager.areas.security.repository.UserRepository;
 import com.bmisiek.todomanager.areas.security.service.UserCreator;
+import com.bmisiek.todomanager.integration.config.IntegrationTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
-@SpringBootTest
-@Transactional
+@IntegrationTest
 public class UserCreatorTest {
     @Autowired
     private UserCreator userCreator;

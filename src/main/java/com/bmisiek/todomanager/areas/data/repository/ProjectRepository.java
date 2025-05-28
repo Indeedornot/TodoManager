@@ -7,6 +7,4 @@ import java.util.List;
 
 public interface ProjectRepository extends JpaRepository<Project, Long> {
     List<Project> findAllByOwnerId(long ownerId);
-
-    List<Project> findAllByTasksAssignee_Id(long tasksId);
 }

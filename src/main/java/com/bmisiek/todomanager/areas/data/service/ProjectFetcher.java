@@ -8,7 +8,6 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,8 +48,7 @@ public class ProjectFetcher {
     public ProjectDto findByIdForAssignee(Long id, Long assigneeId) {
         var project = projectRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Project not found with id: " + id));
-        var tasksIsAssignedTo = taskRepository.findAllByAssignee_IdAndProject_Id(assigneeId, id);
-        var userIsAssignedToProject = tasksIsAssignedTo
+        var userIsAssignedToProject = taskRepository.findAllByAssignee_IdAndProject_Id(assigneeId, id)
                 .stream()
                 .anyMatch(t -> t.getProject().getId().equals(id));
         if (!userIsAssignedToProject) {

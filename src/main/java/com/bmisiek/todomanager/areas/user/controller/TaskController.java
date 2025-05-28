@@ -6,6 +6,7 @@ import com.bmisiek.todomanager.areas.data.service.TaskFetcher;
 import com.bmisiek.todomanager.areas.security.service.UserJwtAuthenticator;
 import com.bmisiek.todomanager.config.openapi.RequiresJwt;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +39,7 @@ public class TaskController {
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (AccessDeniedException e) {
-            return ResponseEntity.status(403).build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
 }

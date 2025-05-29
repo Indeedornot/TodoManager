@@ -46,22 +46,23 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
 
         UserDetails userDetails = getUserDetailsByJwt(foundJwt.get());
-        if (userDetails == null) return;
+        if (userDetails == null) {
+            return;
+        }
 
         Authenticate(request, userDetails);
     }
 
     private UserDetails getUserDetailsByJwt(String jwt) {
-        String username = jwtUtil.extractUsername(jwt);
-        if(username == null || username.isEmpty()) {
+        try {
+            return Optional.ofNullable(jwtUtil.extractUsername(jwt))
+                    .filter(username -> !username.isEmpty())
+                    .map(customUserDetailsService::loadUserByUsername)
+                    .filter(userDetails -> jwtUtil.validateToken(jwt, userDetails))
+                    .orElse(null);
+        } catch (Exception e) {
             return null;
         }
-
-        UserDetails userDetails = this.customUserDetailsService.loadUserByUsername(username);
-        if (!jwtUtil.validateToken(jwt, userDetails)) {
-            return null;
-        }
-        return userDetails;
     }
 
     private static void Authenticate(HttpServletRequest request, UserDetails userDetails) {

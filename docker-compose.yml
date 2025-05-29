@@ -15,8 +15,6 @@ services:
     image: 'postgres:latest'
     ports:
       - 25432:5432
-    volumes:
-      - ./var/db-data/:/var/lib/postgresql/data/
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}

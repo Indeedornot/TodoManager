@@ -27,7 +27,7 @@ public class TaskFetcher {
         var task = taskRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Task not found with id: " + id));
 
-        if (task.getAssignee().getId() != assigneeId) {
+        if (!task.getAssignee().getId().equals(assigneeId)) {
             throw new AccessDeniedException("User does not have access to this task");
         }
 

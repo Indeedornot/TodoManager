@@ -31,7 +31,7 @@ public class TaskRemover {
     }
 
     private void validateProjectOwnership(Project project, User user) throws AccessDeniedException {
-        if (project.getOwner().getId() != user.getId()) {
+        if (!project.getOwner().getId().equals(user.getId())) {
             throw new AccessDeniedException("User does not own this project");
         }
     }

@@ -35,7 +35,7 @@ public class TaskActionController {
             var user = userAuthenticator.getAuthenticatedUser();
             Long projectId = taskCreator.create(dto, user);
             return ResponseEntity.ok(projectId);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | EntityNotFoundException e) {
             return ResponseEntity.badRequest().build();
         } catch (AccessDeniedException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();

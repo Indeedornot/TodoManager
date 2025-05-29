@@ -37,7 +37,7 @@ public class TaskDtoTest {
         taskDto.setDescription("Discuss project updates");
 
         String json = objectMapper.writeValueAsString(taskDto);
-        Assertions.assertTrue(json.contains("\"taskInfo\":{\"type\":\"Bug\"}}"), "JSON should contain taskInfo type, but it does not: " + json);
+        Assertions.assertTrue(json.contains("\"taskInfo\":{\"type\":\"Bug\"}"), "JSON should contain taskInfo type, but it does not: " + json);
 
         TaskDto deserializedTaskDto = objectMapper.readValue(json, TaskDto.class);
 

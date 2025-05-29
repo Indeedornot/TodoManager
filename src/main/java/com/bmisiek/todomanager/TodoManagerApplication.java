@@ -10,7 +10,7 @@ import java.util.Comparator;
 import java.util.List;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.bmisiek.todomanager", "com.bmisiek.libraries.validation"})
+@ComponentScan(basePackages = {"com.bmisiek.todomanager", "com.bmisiek.libraries"})
 public class TodoManagerApplication {
 
     public static void main(String[] args) {

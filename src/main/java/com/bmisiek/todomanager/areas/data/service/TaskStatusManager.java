@@ -1,5 +1,6 @@
 package com.bmisiek.todomanager.areas.data.service;
 
+import com.bmisiek.libraries.datetime.IDateTimeProvider;
 import com.bmisiek.todomanager.areas.data.dto.TaskDto;
 import com.bmisiek.todomanager.areas.data.entity.Task;
 import com.bmisiek.todomanager.areas.data.repository.TaskRepository;
@@ -8,15 +9,15 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-import java.time.ZoneOffset;
 import java.util.List;
 
 @Service
 public class TaskStatusManager {
     private final TaskRepository taskRepository;
-    public TaskStatusManager(TaskRepository taskRepository) {
+    private final IDateTimeProvider timeProvider;
+    public TaskStatusManager(TaskRepository taskRepository, IDateTimeProvider timeProvider) {
         this.taskRepository = taskRepository;
+        this.timeProvider = timeProvider;
     }
 
     public void markAsCompleted(Long taskId, User user) {
@@ -48,7 +49,7 @@ public class TaskStatusManager {
                 .toList();
     }
 
-    private static void setDateFinished(Task task) {
-        task.setFinishedAt(Instant.now().atZone(ZoneOffset.systemDefault()));
+    private void setDateFinished(Task task) {
+        task.setFinishedAt(timeProvider.now());
     }
 }

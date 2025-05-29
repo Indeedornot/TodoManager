@@ -40,5 +40,5 @@ public class Task {
     private User assignee;
 
     @Nullable
-    private ZonedDateTime finishedAt;
+    private Date finishedAt;
 }

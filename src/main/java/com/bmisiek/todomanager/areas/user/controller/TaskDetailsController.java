@@ -1,4 +1,4 @@
-package com.bmisiek.todomanager.areas.admin.controller.task;
+package com.bmisiek.todomanager.areas.user.controller;
 
 
 import com.bmisiek.todomanager.areas.data.dto.TaskEditAssigneeDto;
@@ -10,9 +10,12 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@RestController("UserTaskDetailsController")
 @RequiresJwt
 public class TaskDetailsController {
     private final TaskDetailsService taskDetailsService;
@@ -23,24 +26,7 @@ public class TaskDetailsController {
         this.userAuthenticator = userAuthenticator;
     }
 
-    @PutMapping("/api/admin/tasks/{id}/assignee")
-    public ResponseEntity<String> changeAssignee(@RequestBody TaskEditAssigneeDto taskDto, @PathVariable Long id) {
-        if (taskDto.getTaskId() == null || !taskDto.getTaskId().equals(id)) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        try {
-            var user = userAuthenticator.getAuthenticatedUser();
-            taskDetailsService.changeAssignee(taskDto, user);
-            return ResponseEntity.ok().build();
-        } catch (EntityNotFoundException | IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
-        } catch (AccessDeniedException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-    }
-
-    @PutMapping("/api/admin/tasks/{id}/type")
+    @PutMapping("/api/user/tasks/{id}/type")
     public ResponseEntity<String> changeType(@RequestBody TaskEditTypeDto taskDto, @PathVariable Long id) {
         if (taskDto.getTaskId() == null || !taskDto.getTaskId().equals(id)) {
             return ResponseEntity.badRequest().build();
@@ -48,7 +34,7 @@ public class TaskDetailsController {
 
         try {
             var user = userAuthenticator.getAuthenticatedUser();
-            taskDetailsService.changeTaskType(taskDto, user);
+            taskDetailsService.changeUserTaskType(taskDto, user);
             return ResponseEntity.ok().build();
         } catch (EntityNotFoundException | IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();

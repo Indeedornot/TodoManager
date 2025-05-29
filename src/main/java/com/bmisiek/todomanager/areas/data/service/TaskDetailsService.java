@@ -2,6 +2,7 @@ package com.bmisiek.todomanager.areas.data.service;
 
 import com.bmisiek.libraries.validation.ValidatorInterface;
 import com.bmisiek.todomanager.areas.data.dto.TaskEditAssigneeDto;
+import com.bmisiek.todomanager.areas.data.dto.TaskEditTypeDto;
 import com.bmisiek.todomanager.areas.data.entity.Task;
 import com.bmisiek.todomanager.areas.data.repository.TaskRepository;
 import com.bmisiek.todomanager.areas.security.entity.User;
@@ -22,22 +23,16 @@ public class TaskDetailsService {
         this.validator = validator;
     }
 
-    private boolean isOwner(Task task, User owner) {
-        return task.getProject().getOwner().getId().equals(owner.getId());
-    }
-
-    private boolean isAssignee(Task task, User assignee) {
-        return task.getAssignee() != null && task.getAssignee().getId().equals(assignee.getId());
-    }
-
-    private void validateCanChangeAssignee(Task task, User owner) {
-        if (!isOwner(task, owner)) {
+    private void validateIsOwner(Task task, User owner) {
+        var isOwner = task.getProject().getOwner().getId().equals(owner.getId());
+        if (!isOwner) {
             throw new AccessDeniedException("User does not own this project");
         }
     }
 
-    private void validateCanChangeTaskType(Task task, User owner) {
-        if (!isOwner(task, owner) && !isAssignee(task, owner)) {
+    private void validateIsAssignee(Task task, User assignee) {
+        var isAssignee = task.getAssignee() != null && task.getAssignee().getId().equals(assignee.getId());
+        if (!isAssignee) {
             throw new AccessDeniedException("User cannot edit this project");
         }
     }
@@ -46,7 +41,7 @@ public class TaskDetailsService {
         validator.assertValid(dto);
         var task = taskRepository.findById(dto.getTaskId())
                 .orElseThrow(() -> new EntityNotFoundException("Task not found with id: " + dto.getTaskId()));
-        validateCanChangeAssignee(task, owner);
+        validateIsOwner(task, owner);
 
         var user = userRepository.findById(dto.getNewAssigneeId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + dto.getNewAssigneeId()));
@@ -55,12 +50,23 @@ public class TaskDetailsService {
         taskRepository.save(task);
     }
 
-//    public void changeTaskType(Long taskId, TaskType newType, User owner) {
-//        var task = taskRepository.findById(taskId)
-//                .orElseThrow(() -> new EntityNotFoundException("Task not found with id: " + taskId));
-//        validateCanChangeTaskType(task, owner);
-//
-//        task.setTaskType(newType);
-//        taskRepository.save(task);
-//    }
+    public void changeUserTaskType(TaskEditTypeDto dto, User assignee) {
+        validator.assertValid(dto);
+        var task = taskRepository.findById(dto.getTaskId())
+                .orElseThrow(() -> new EntityNotFoundException("Task not found with id: " + dto.getTaskId()));
+        validateIsAssignee(task, assignee);
+
+        task.setTaskType(dto.getNewType());
+        taskRepository.save(task);
+    }
+
+    public void changeTaskType(TaskEditTypeDto dto, User owner) {
+        validator.assertValid(dto);
+        var task = taskRepository.findById(dto.getTaskId())
+                .orElseThrow(() -> new EntityNotFoundException("Task not found with id: " + dto.getTaskId()));
+        validateIsOwner(task, owner);
+
+        task.setTaskType(dto.getNewType());
+        taskRepository.save(task);
+    }
 }

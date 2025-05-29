@@ -34,9 +34,9 @@ public class TaskDto {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.taskType = taskType;
         this.projectId = projectId;
         this.assigneeId = assigneeId;
+        this.setTaskType(taskType);
     }
 
     public void setTaskType(TaskType taskType) {

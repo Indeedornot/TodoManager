@@ -59,7 +59,7 @@ public class TaskControllerTest {
                 taskCreateDto.getAssigneeId()
         );
         Assertions.assertEquals(1, tasks.length);
-        Assertions.assertEquals(tasks[0], expectedTask);
+        Assertions.assertEquals(expectedTask, tasks[0]);
     }
 
     @Test

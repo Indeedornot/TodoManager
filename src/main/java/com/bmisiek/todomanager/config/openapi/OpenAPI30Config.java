@@ -9,7 +9,11 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @OpenAPIDefinition(
-        info = @Info(title = "Channel API", version = "v1")
+        info = @Info(
+                title = "Todo Manager API", 
+                version = "v1",
+                description = "API for managing projects and tasks in the Todo Manager application"
+        )
 )
 @SecurityScheme(
         name = "bearerAuth",

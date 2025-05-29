@@ -2,6 +2,9 @@ package com.bmisiek.todomanager.areas.security.controller;
 
 import com.bmisiek.todomanager.areas.security.dto.LoginDto;
 import com.bmisiek.todomanager.areas.security.service.UserJwtAuthenticator;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +22,12 @@ public class SignInController {
         this.authenticator = userAuthenticator;
     }
 
+    @Operation(summary = "Authenticate user", description = "Authenticates a user and returns a JWT token")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successfully authenticated"),
+        @ApiResponse(responseCode = "400", description = "Invalid input data"),
+        @ApiResponse(responseCode = "401", description = "Authentication failed")
+    })
     @PostMapping("/api/security/login")
     public ResponseEntity<String> authenticateUser(@RequestBody LoginDto loginDto){
         try {
@@ -26,20 +35,25 @@ public class SignInController {
             return ResponseEntity.ok(token);
         }
         catch (IllegalStateException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().build();
         }
         catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 
+    @Operation(summary = "Logout user", description = "Logs out the current user and invalidates their token")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "User logged out successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid logout request")
+    })
     @PostMapping("/api/security/logout")
     public ResponseEntity<String> logoutUser() {
         try {
             authenticator.logout();
+            return ResponseEntity.ok("User logged out successfully.");
         } catch (IllegalStateException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().body("Invalid logout request.");
         }
-        return new ResponseEntity<>("User logged out successfully.", HttpStatus.OK);
     }
 }

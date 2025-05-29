@@ -1,6 +1,5 @@
 package com.bmisiek.todomanager.areas.data.dto.info;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.Getter;
 

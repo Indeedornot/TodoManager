@@ -4,6 +4,7 @@ package com.bmisiek.todomanager.areas.admin.controller.task;
 import com.bmisiek.todomanager.areas.data.dto.TaskEditAssigneeDto;
 import com.bmisiek.todomanager.areas.data.dto.TaskEditTypeDto;
 import com.bmisiek.todomanager.areas.data.service.TaskDetailsService;
+import com.bmisiek.todomanager.areas.data.service.TaskStatusManager;
 import com.bmisiek.todomanager.areas.security.service.UserJwtAuthenticator;
 import com.bmisiek.todomanager.config.openapi.RequiresJwt;
 import jakarta.persistence.EntityNotFoundException;
@@ -16,10 +17,12 @@ import org.springframework.web.bind.annotation.*;
 @RequiresJwt
 public class TaskDetailsController {
     private final TaskDetailsService taskDetailsService;
+    private final TaskStatusManager taskStatusManager;
     private final UserJwtAuthenticator userAuthenticator;
 
-    public TaskDetailsController(TaskDetailsService taskDetailsService, UserJwtAuthenticator userAuthenticator) {
+    public TaskDetailsController(TaskDetailsService taskDetailsService, TaskStatusManager taskStatusManager, UserJwtAuthenticator userAuthenticator) {
         this.taskDetailsService = taskDetailsService;
+        this.taskStatusManager = taskStatusManager;
         this.userAuthenticator = userAuthenticator;
     }
 
@@ -54,6 +57,17 @@ public class TaskDetailsController {
             return ResponseEntity.badRequest().build();
         } catch (AccessDeniedException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+    }
+
+    @PostMapping("/api/admin/tasks/{id}/completed")
+    public ResponseEntity<String> markAsCompleted(@PathVariable Long id) {
+        try {
+            var user = userAuthenticator.getAuthenticatedUser();
+            taskStatusManager.markAsCompleted(id, user);
+            return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 }

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController("AdminProjectController")
+@RestController
 @RequiresJwt
 public class ProjectController {
     private final ProjectFetcher projectFetcher;

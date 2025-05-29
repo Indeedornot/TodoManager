@@ -34,6 +34,7 @@ public class TaskDetailsControllerTest
     public void Should_ProtectEndpoint() throws Exception {
         var endpoints = new MockHttpServletRequestBuilder[] {
                 MyRequestBuilders.putJson(getEditTypeUrl(1L), null),
+                MyRequestBuilders.put(getMarkCompletedUrl(1L)),
         };
 
         for (MockHttpServletRequestBuilder endpoint : endpoints) {
@@ -103,6 +104,55 @@ public class TaskDetailsControllerTest
         var updateTypeDto = new TaskEditTypeDto(taskId, TaskType.FEATURE);
 
         mockMvc.perform(MyRequestBuilders.putJson(getEditTypeUrl(taskId), updateTypeDto, otherToken))
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
+    }
+
+    private static String getMarkCompletedUrl(Long taskId) {
+        return "/api/user/tasks/" + taskId + "/completed";
+    }
+
+    @Test
+    public void Should_MarkTaskAsCompleted_WhenAssigned() throws Exception {
+        var assigneeId = 1L;
+        String token = testUserHandler.createAdminAndGetToken(assigneeId);
+
+        Long projectId = testEntityHandler.createProject(new ProjectCreateDto("Test Project", "Description"), token);
+        Long taskId = testEntityHandler.createTask(new TaskCreateDto(
+                "Test Task",
+                "Description",
+                TaskType.BUG,
+                projectId,
+                assigneeId
+        ), token);
+
+        mockMvc.perform(MyRequestBuilders.postAuthed(getMarkCompletedUrl(taskId), token))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    public void Should_ReturnNotFound_WhenTaskDoesNotExist() throws Exception {
+        String token = testUserHandler.createAdminAndGetToken(1L);
+
+        mockMvc.perform(MyRequestBuilders.postAuthed(getMarkCompletedUrl(999L), token))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
+    @Test
+    public void Should_ReturnForbidden_WhenNotAssigned() throws Exception {
+        var assigneeId = 1L;
+        String token = testUserHandler.createAdminAndGetToken(assigneeId);
+        String otherToken = testUserHandler.createAdminAndGetToken(2L);
+
+        Long projectId = testEntityHandler.createProject(new ProjectCreateDto("Test Project", "Description"), token);
+        Long taskId = testEntityHandler.createTask(new TaskCreateDto(
+                "Test Task",
+                "Description",
+                TaskType.BUG,
+                projectId,
+                assigneeId
+        ), token);
+
+        mockMvc.perform(MyRequestBuilders.postAuthed(getMarkCompletedUrl(taskId), otherToken))
                 .andExpect(MockMvcResultMatchers.status().isForbidden());
     }
 }

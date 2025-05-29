@@ -5,6 +5,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.springframework.lang.Nullable;
+
+import java.time.ZonedDateTime;
+import java.util.Date;
 
 @Data
 @Entity(name = "tasks")
@@ -34,4 +38,7 @@ public class Task {
     @OneToOne
     @JoinColumn(name = "assignee_id")
     private User assignee;
+
+    @Nullable
+    private ZonedDateTime finishedAt;
 }

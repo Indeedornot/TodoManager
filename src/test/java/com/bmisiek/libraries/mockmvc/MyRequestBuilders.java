@@ -41,7 +41,7 @@ public class MyRequestBuilders extends MockMvcRequestBuilders {
                 .content(content instanceof String ? (String) content : toJson(content));
     }
 
-    public static MockHttpServletRequestBuilder post(String uriTemplate, String bearer) {
+    public static MockHttpServletRequestBuilder postAuthed(String uriTemplate, String bearer) {
         return MockMvcRequestBuilders.post(URI.create(uriTemplate))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + bearer);
     }

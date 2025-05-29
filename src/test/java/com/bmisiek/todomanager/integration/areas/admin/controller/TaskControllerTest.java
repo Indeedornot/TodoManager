@@ -122,4 +122,65 @@ public class TaskControllerTest {
         mockMvc.perform(MyRequestBuilders.getAuthed("/api/admin/tasks/" + taskId, token))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
+
+    @Test
+    public void Should_ReturnPendingTasks_WhenExist() throws Exception {
+        var token = testUserHandler.createAdminAndGetToken(1L);
+        var currentUser = testUserHandler.getUser(1L);
+
+        Long projectId = testEntityHandler.createProject(new ProjectCreateDto("Test Project", "Description"), token);
+
+        var taskCreateDto = new TaskCreateDto("Pending Task", "Task Description", TaskType.BUG, projectId, currentUser.getId());
+        Long taskId = testEntityHandler.createTask(taskCreateDto, token);
+
+        var returnJson = mockMvc.perform(MyRequestBuilders.getAuthed(getPendingTasksUrl(projectId), token))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        var tasks = objectMapper.readValue(returnJson, TaskDto[].class);
+        Assertions.assertEquals(1, tasks.length);
+        testEntityHandler.AssertEquals(tasks[0], taskId, taskCreateDto);
+    }
+
+    @Test
+    public void Should_ReturnEmptyList_WhenNoTasks() throws Exception {
+        var token = testUserHandler.createAdminAndGetToken(1L);
+
+        Long projectId = testEntityHandler.createProject(new ProjectCreateDto("Test Project", "Description"), token);
+
+        var returnJson = mockMvc.perform(MyRequestBuilders.getAuthed(getPendingTasksUrl(projectId), token))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        var tasks = objectMapper.readValue(returnJson, TaskDto[].class);
+        Assertions.assertEquals(0, tasks.length);
+    }
+
+    @Test
+    public void Should_ReturnEmptyList_WhenNoPendingTasks() throws Exception {
+        var token = testUserHandler.createAdminAndGetToken(1L);
+
+        Long projectId = testEntityHandler.createProject(new ProjectCreateDto("Test Project", "Description"), token);
+
+        Long taskId = testEntityHandler.createTask(new TaskCreateDto(
+                "Completed Task",
+                "Task Description",
+                TaskType.BUG,
+                projectId,
+                1L
+        ), token);
+        mockMvc.perform(MyRequestBuilders.postAuthed("/api/admin/tasks/" + taskId + "/completed", token))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        var returnJson = mockMvc.perform(MyRequestBuilders.getAuthed(getPendingTasksUrl(projectId), token))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        var tasks = objectMapper.readValue(returnJson, TaskDto[].class);
+        Assertions.assertEquals(0, tasks.length);
+    }
+
+
+    private static String getPendingTasksUrl(Long projectId) {
+        return "/api/admin/projects/" + projectId + "/tasks/pending";
+    }
 }

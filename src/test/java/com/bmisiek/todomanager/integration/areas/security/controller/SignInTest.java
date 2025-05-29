@@ -97,7 +97,7 @@ public class SignInTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
-        mockMvc.perform(MyRequestBuilders.post(Routes.LOGOUT, token))
+        mockMvc.perform(MyRequestBuilders.postAuthed(Routes.LOGOUT, token))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 

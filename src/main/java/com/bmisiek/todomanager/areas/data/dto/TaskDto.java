@@ -1,5 +1,8 @@
 package com.bmisiek.todomanager.areas.data.dto;
 
+import com.bmisiek.todomanager.areas.data.dto.info.BugInfo;
+import com.bmisiek.todomanager.areas.data.dto.info.FeatureInfo;
+import com.bmisiek.todomanager.areas.data.dto.info.TaskInfo;
 import com.bmisiek.todomanager.areas.data.entity.Task;
 import com.bmisiek.todomanager.areas.data.entity.TaskType;
 import jakarta.validation.constraints.NotBlank;
@@ -18,6 +21,34 @@ public class TaskDto {
     @NotNull private TaskType taskType;
     @NotNull private Long projectId;
     @NotNull private Long assigneeId;
+    @NotNull private TaskInfo taskInfo;
+
+    public TaskDto(
+         Long id,
+         String title,
+         String description,
+         TaskType taskType,
+         Long projectId,
+         Long assigneeId
+    ) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.taskType = taskType;
+        this.projectId = projectId;
+        this.assigneeId = assigneeId;
+    }
+
+    public void setTaskType(TaskType taskType) {
+        this.taskType = taskType;
+        if (taskType == TaskType.BUG) {
+            this.taskInfo = new BugInfo();
+        } else if (taskType == TaskType.FEATURE) {
+            this.taskInfo = new FeatureInfo();
+        } else {
+            this.taskInfo = new TaskInfo();
+        }
+    }
 
     public TaskDto(Task task) {
         this.id = task.getId();
@@ -30,5 +61,7 @@ public class TaskDto {
         if (task.getAssignee() != null) {
             this.assigneeId = task.getAssignee().getId();
         }
+
+        this.setTaskType(task.getTaskType());
     }
 }

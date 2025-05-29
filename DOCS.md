@@ -36,7 +36,7 @@ Projekt został stworzony używając
   - ![img_9.png](docs/img_9.png)
 
 ### ERD
-![ERD Diagram.png](ERD%20Diagram.png)
+![ERD Diagram.png](docs/ERD%20Diagram.png)
 
 ### Coverage
-![Test Coverage.png](Test%20Coverage.png)
+![Test Coverage.png](docs/Test%20Coverage.png)

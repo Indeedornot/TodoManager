@@ -32,7 +32,7 @@ The application focuses on centralized task management where
 - **Database**: PostgreSQL
 - **Authentication**: JWT-based authentication
 - **Documentation**: Swagger/OpenAPI
-- **Testing**: JUnit with comprehensive test coverage
+- **Testing**: JUnit with test coverage and H2
 - **Build Tool**: Maven
 - **Containerization**: Docker and Docker Compose
 

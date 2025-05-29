@@ -1,6 +1,5 @@
 package com.bmisiek.todomanager.areas.security.controller;
 
-import com.bmisiek.todomanager.config.Routes;
 import com.bmisiek.todomanager.areas.security.dto.SignUpDto;
 import com.bmisiek.todomanager.areas.security.service.UserCreator;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,7 +19,7 @@ public class SignUpController {
         this.userCreator = userCreator;
     }
 
-    @PostMapping(Routes.SIGN_UP)
+    @PostMapping("/api/security/sign-up")
     public ResponseEntity<?> registerUser(@RequestBody SignUpDto signUpDto){
         try {
             userCreator.create(signUpDto);

@@ -1,7 +1,6 @@
 package com.bmisiek.todomanager.integration.areas.security.controller;
 
 import com.bmisiek.libraries.mockmvc.MyRequestBuilders;
-import com.bmisiek.todomanager.config.Routes;
 import com.bmisiek.todomanager.areas.security.dto.LoginDto;
 import com.bmisiek.todomanager.areas.security.dto.SignUpDto;
 import com.bmisiek.todomanager.integration.config.IntegrationTest;
@@ -14,6 +13,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 public class SignUpTest {
     @Autowired
     private MockMvc mockMvc;
+    private final String signUpUrl = "/api/security/sign-up";
 
     @Test
     public void Should_RegisterUser() throws Exception {
@@ -28,14 +28,14 @@ public class SignUpTest {
         signUpDto.setEmail(email);
         signUpDto.setPassword(password);
 
-        mockMvc.perform(MyRequestBuilders.postJson(Routes.SIGN_UP, signUpDto))
+        mockMvc.perform(MyRequestBuilders.postJson(signUpUrl, signUpDto))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
         LoginDto loginDto = new LoginDto();
         loginDto.setUsernameOrEmail(username);
         loginDto.setPassword(password);
 
-        mockMvc.perform(MyRequestBuilders.postJson(Routes.LOGIN, loginDto))
+        mockMvc.perform(MyRequestBuilders.postJson("/api/security/login", loginDto))
                 .andExpect(MockMvcResultMatchers.status().isOk()
         );
     }
@@ -54,11 +54,11 @@ public class SignUpTest {
         signUpDto.setEmail(email);
         signUpDto.setPassword(password);
 
-        mockMvc.perform(MyRequestBuilders.postJson(Routes.SIGN_UP, signUpDto))
+        mockMvc.perform(MyRequestBuilders.postJson(signUpUrl, signUpDto))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
         signUpDto.setEmail(otherEmail);
-        mockMvc.perform(MyRequestBuilders.postJson(Routes.SIGN_UP, signUpDto))
+        mockMvc.perform(MyRequestBuilders.postJson(signUpUrl, signUpDto))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
@@ -75,11 +75,11 @@ public class SignUpTest {
         signUpDto.setEmail(email);
         signUpDto.setPassword(password);
 
-        mockMvc.perform(MyRequestBuilders.postJson(Routes.SIGN_UP, signUpDto))
+        mockMvc.perform(MyRequestBuilders.postJson(signUpUrl, signUpDto))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
         signUpDto.setUsername("newusername");
-        mockMvc.perform(MyRequestBuilders.postJson(Routes.SIGN_UP, signUpDto))
+        mockMvc.perform(MyRequestBuilders.postJson(signUpUrl, signUpDto))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 }

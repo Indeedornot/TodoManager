@@ -1,6 +1,5 @@
 package com.bmisiek.todomanager.areas.security.controller;
 
-import com.bmisiek.todomanager.config.Routes;
 import com.bmisiek.todomanager.areas.security.dto.LoginDto;
 import com.bmisiek.todomanager.areas.security.service.UserJwtAuthenticator;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,7 +19,7 @@ public class SignInController {
         this.authenticator = userAuthenticator;
     }
 
-    @PostMapping(Routes.LOGIN)
+    @PostMapping("/api/security/login")
     public ResponseEntity<String> authenticateUser(@RequestBody LoginDto loginDto){
         try {
             final var token = authenticator.authenticate(loginDto);
@@ -34,7 +33,7 @@ public class SignInController {
         }
     }
 
-    @PostMapping(Routes.LOGOUT)
+    @PostMapping("/api/security/logout")
     public ResponseEntity<String> logoutUser() {
         try {
             authenticator.logout();

@@ -1,7 +1,6 @@
 package com.bmisiek.todomanager.integration.areas.security.controller;
 
 import com.bmisiek.libraries.mockmvc.MyRequestBuilders;
-import com.bmisiek.todomanager.config.Routes;
 import com.bmisiek.todomanager.areas.security.dto.LoginDto;
 import com.bmisiek.todomanager.areas.security.dto.SignUpDto;
 import com.bmisiek.todomanager.integration.config.IntegrationTest;
@@ -15,6 +14,10 @@ public class SignInTest {
     @Autowired
     private MockMvc mockMvc;
 
+    private final String LoginUrl = "/api/security/login";
+    private final String logoutUrl = "/api/security/logout";
+
+
     @Test
     public void Should_LoginUser() throws Exception {
         var username = "testuser";
@@ -27,7 +30,7 @@ public class SignInTest {
         loginDto.setUsernameOrEmail(username);
         loginDto.setPassword(password);
 
-        mockMvc.perform(MyRequestBuilders.postJson(Routes.LOGIN, loginDto))
+        mockMvc.perform(MyRequestBuilders.postJson(LoginUrl, loginDto))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
@@ -40,7 +43,7 @@ public class SignInTest {
         loginDto.setUsernameOrEmail(username);
         loginDto.setPassword(password);
 
-        mockMvc.perform(MyRequestBuilders.postJson(Routes.LOGIN, loginDto))
+        mockMvc.perform(MyRequestBuilders.postJson(LoginUrl, loginDto))
                 .andExpect(MockMvcResultMatchers.status().isUnauthorized());
     }
 
@@ -57,7 +60,7 @@ public class SignInTest {
         loginDto.setUsernameOrEmail(username);
         loginDto.setPassword(wrongPassword);
 
-        mockMvc.perform(MyRequestBuilders.postJson(Routes.LOGIN, loginDto))
+        mockMvc.perform(MyRequestBuilders.postJson(LoginUrl, loginDto))
                 .andExpect(MockMvcResultMatchers.status().isUnauthorized());
     }
 
@@ -73,11 +76,11 @@ public class SignInTest {
         loginDto.setUsernameOrEmail(username);
         loginDto.setPassword(password);
 
-        var token = mockMvc.perform(MyRequestBuilders.postJson(Routes.LOGIN, loginDto))
+        var token = mockMvc.perform(MyRequestBuilders.postJson(LoginUrl, loginDto))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
-        mockMvc.perform(MyRequestBuilders.postJson(Routes.LOGIN, loginDto, token))
+        mockMvc.perform(MyRequestBuilders.postJson(LoginUrl, loginDto, token))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
@@ -93,17 +96,17 @@ public class SignInTest {
         loginDto.setUsernameOrEmail(username);
         loginDto.setPassword(password);
 
-        var token = mockMvc.perform(MyRequestBuilders.postJson(Routes.LOGIN, loginDto))
+        var token = mockMvc.perform(MyRequestBuilders.postJson(LoginUrl, loginDto))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
-        mockMvc.perform(MyRequestBuilders.postAuthed(Routes.LOGOUT, token))
+        mockMvc.perform(MyRequestBuilders.postAuthed(logoutUrl, token))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
     public void Should_NotLogoutUser_WhenNotLoggedIn() throws Exception {
-        mockMvc.perform(MyRequestBuilders.post(Routes.LOGOUT))
+        mockMvc.perform(MyRequestBuilders.post(logoutUrl))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
@@ -115,7 +118,7 @@ public class SignInTest {
         signUpDto.setEmail(email);
         signUpDto.setPassword(password);
 
-        mockMvc.perform(MyRequestBuilders.postJson(Routes.SIGN_UP, signUpDto))
+        mockMvc.perform(MyRequestBuilders.postJson("/api/security/sign-up", signUpDto))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 }

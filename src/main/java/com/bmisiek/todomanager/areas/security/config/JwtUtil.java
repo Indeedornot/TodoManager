@@ -6,7 +6,6 @@ import io.jsonwebtoken.*;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -26,7 +25,7 @@ public class JwtUtil {
         return extractClaim(token, Claims::getSubject);
     }
 
-    private Date extractExpiration(String token) throws Exception {
+    public Date extractExpiration(String token) throws Exception {
         return extractClaim(token, Claims::getExpiration);
     }
 
@@ -56,7 +55,7 @@ public class JwtUtil {
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
     }
 
-    private Date getExpirationDate() {
+    protected Date getExpirationDate() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(timeProvider.now());
         calendar.add(Calendar.HOUR, 10);
